@@ -1,9 +1,4 @@
 #!/usr/bin/env bash
-#creat de @calvarr
-#contact freenode #linuxfans-ro #ubuntu-ro
-#forum http://linuxfans.ro/viewtopic.php?f=34&t=169
-#licență GPL
-#necesita sopcast, mplayer, optional axel
 #culori
 negru='\E[1;30;40m'
 rosu='\e[1;31;40m'
@@ -43,7 +38,7 @@ exit
 else
 rm /tmp/testinternet
 #Surse:
-subscriere=http://pastebin.com/raw.php?i=NHvztAU8
+subscriere=~/.subscrieri
 wget -qO - $subscriere|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t
 echo -e $albastru"Alegeti canalul dorit..."
 echo -e Pentru a parasi programul alegeti $rosu'"q"'
