@@ -8,4 +8,3 @@ contact freenode #linuxfans-ro #ubuntu-ro
 forum http://linuxfans.ro/viewtopic.php?f=34&t=169
 licență GPL
 necesita sopcast, mplayer, optional axel
-
