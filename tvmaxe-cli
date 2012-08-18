@@ -38,8 +38,8 @@ exit
 else
 rm /tmp/testinternet
 #Surse:
-subscriere=~/.subscrieri
-wget -qO - $subscriere|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t
+subscriere="cat /home/$USER/.subscrieri"
+$subscriere|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t
 echo -e $albastru"Alegeti canalul dorit..."
 echo -e Pentru a parasi programul alegeti $rosu'"q"'
 read sursa
@@ -92,7 +92,7 @@ elif test "$valoare" = "q" ; then rm /tmp/surse ; exit;
 fi
 elif test "$sursa" = "q" ; then exit 0
 else
-sur=`wget -qO - $subscriere|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
+sur=`$subscriere|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
 #lista canalelor din sursa aleasă
 echo -e $verde "Lista canale:"
 consola=`echo $DISPLAY'a'`
