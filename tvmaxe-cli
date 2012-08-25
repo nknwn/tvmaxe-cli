@@ -30,6 +30,7 @@ adresa=`wget -qO - http://www.990.ro|sed -n '/filme adaugate/,/imbunatatita/ p'|
 server1=`wget -qO - http://www.990.ro/$adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 server2=`wget -qO - http://www.990.ro/$adresa|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 nume=`wget -qO - http://www.990.ro|sed -n '/filme adaugate/,/imbunatatita/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//;s/ /_/g'|sed -n "${noutate}p"`
+descriere=`wget -qO - http://www.990.ro/$adresa|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/ /g'`
 fi
 echo -e $verde
 ###############################################################
@@ -50,6 +51,7 @@ if [[ "$selectie" = "filme" ]]; then
 server1=`wget -qO - http://www.990.ro/$adresa2|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 server2=`wget -qO - http://www.990.ro/$adresa2|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 nume=`wget -qO - "http://www.990.ro/cauta2.php?text=$titlu&submit=Cauta"|sed -n '/content_wrapper/,/post_title/ p'|grep titlu|sed 's/<[^>]*>/ /g;s/^[\t]*//;s/ /_/g;s/__//g'|sed -n "${numar}p"`
+descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/ /g'`
 #################################################################
 else
 wget -qO - http://www.990.ro/$adresa2|sed -n '/show_faces/,/show_faces/ p'|sed "s/'/\n /g"|sed 's/<[^>]*>/ /g;s/>/\n/;s/ /_/g;s/</ /'|grep vizionari|awk '{print $1}'|sed 's/_/ /g'|nl|more
@@ -59,6 +61,7 @@ read nr
 if [[ "$nr" = "c" ]]; then break;fi;
 sezoane=`wget -qO - http://www.990.ro/$adresa2|sed -n '/show_faces/,/show_faces/ p'|sed "s/,/\n /g;s/ /_/g;s/'/ /g"|grep href|awk '{print $2}'|sed -n "${nr}p"`
 nume=`wget -qO - http://www.990.ro/$adresa2|sed -n '/show_faces/,/show_faces/ p'|sed "s/'/\n /g"|sed 's/<[^>]*>/ /g;s/>/\n/;s/ /_/g;s/</ /;s/__//g'|grep vizionari|awk '{print $1}'|sed -n "${nr}p"`
+descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/ /g'`
 server1=`wget -qO - http://www.990.ro/$sezoane|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 server2=`wget -qO - http://www.990.ro/$sezoane|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 fi;fi;
@@ -68,7 +71,7 @@ upload=`wget -qO - $server2|grep 180upload|sed 's/ /_/g;s/"/ /g'|awk '{print $2}
 film1=`wget -qO - $fast|grep flv|sed "s/ /_/;s/'/ /g"|awk '{print $4}'`
 film2=`wget -qO - $upload|grep "video|"|sed 's/ /_/g;s/|/ /g'|awk '{print "http://"$10"."$9"."$8"."$7":"$20"/d/"$19"/video.flv"}'`
 ################################################################
-echo -e $purpuriu"Ati ales:" $verde $nume
+echo -e $verde$descriere
 consola=`echo $DISPLAY'a'`
 if [[ "$consola" = "a" ]]; then
 echo -e $purpuriu Introduceti marimea ferestrei si coordonatele de redare $rosu "(ex. 360 10:10)" 
