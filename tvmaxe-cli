@@ -91,7 +91,7 @@ fi;done;done;done;fi
 #########################################################
 if test "$sursa" = "q" ; then exit 0
 else
-sur=`wget -qO - $subscriere|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
+sur=`cat $HOME/.subscrieri|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
 #lista canalelor din sursa aleasă
 echo -e $verde "Lista canale:"
 consola=`echo $DISPLAY'a'`
