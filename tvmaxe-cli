@@ -6,20 +6,22 @@ while :;do
 clear
 echo -e $purpuriu "_____  _   _  _   _    _    _   _  ___ ";echo  ")__ __(\ ( ) /) \_/ (  )_\  ) ( ) () __("
 echo  "  | |   )\_/( |  _  | /( )\  ) | ( | _) ";echo  "  )_(    \_/  )_( )_()_/ \_()_( )_()___(";echo;echo "              ___  __    ____ ";echo "             / __)(  )  (_  _)";echo "            ( (__  )(__  _)(_ ";echo "             \___)(____)(____)"
-echo v.0.3.5
+echo v.0.3.6-b
 testconnection=`wget --tries=3 --timeout=15 www.google.com -qO - &>/dev/null 2>&1`
 if [ $? != 0 ]; then for i in `seq 1 2`;do 
 clear;sleep 1;echo -e $rosu "! Verificati conexiunea la internet !"$esc;sleep 1;done; exit 1;
 else
 cat $HOME/.subscrieri|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t|more
-echo -e $cyan"Alegeti numarul subscrierii dorite" $cyan"sau parasiti "$rosu"q"$cyan"uit"$purpuriu
+echo -e $cyan"Alegeti numarul subscrierii dorite:" $cyan "sau parasiti " $rosu"q"$cyan"uit"
 read sursa
-if [[ "$sursa" = "9" ]];then
+if [[ "$sursa" = "q" ]]; then exit 0; fi;
+sur=`cat $HOME/.subscrieri|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
+if [[ "$sur" = "filme" ]];then
 while :;do 
 while :;do
 echo -e $purpuriu Filme si seriale noi: www.990.ro$verde
 wget -qO - http://www.990.ro|sed -n '/filme adaugate/,/imbunatatita/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//'|nl
-echo -e $cyan"Selectati numarul filmului dorit sau "$rosu"c"$cyan"autati" altul";" $rosu"r"$cyan"eveniti"";"$rosu "q"$cyan"uit"
+echo -e $purpuriu Selectati numarul filmului dorit sau $rosu"c"$purpuriu"autati" altul";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$rosu
 read noutate
 if [[ "$noutate" = "r" ]]; then break 3;fi;
 if [[ "$noutate" = "q" ]]; then exit 0;fi;
@@ -40,7 +42,8 @@ if [[ -z $filme ]]; then clear
 for i in `seq 1 2`;do
 sleep 1;echo -e $rosu"Nu am gasit filmul cautat sau posibil sa fi gresit denumirea? mai incercati..." 
 sleep 1;clear;done;break;fi;
-echo -e $cyan"Selectati numarul filmului dorit sau "$rosu"c"$cyan"autati" altul";" $rosu"r"$cyan"eveniti"";"$rosu "q"$cyan"uit"$verde
+echo -e $purpuriu Selectati numarul filmului dorit sau $rosu"c"$purpuriu"autati" altul";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
+
 read numar
 if [[ "$numar" = "r" ]];then break 3;fi;
 if [[ "$numar" = "c" ]];then break;fi;
@@ -55,7 +58,7 @@ descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockq
 #################################################################
 else
 wget -qO - http://www.990.ro/$adresa2|sed -n '/show_faces/,/show_faces/ p'|sed "s/'/\n /g"|sed 's/<[^>]*>/ /g;s/>/\n/;s/ /_/g;s/</ /'|grep vizionari|awk '{print $1}'|sed 's/_/ /g'|nl|more
-echo -e $cyan"Selectati numarul filmului dorit sau "$rosu"c"$cyan"autati" altul";" $rosu"r"$cyan"eveniti"";"$rosu "q"$cyan"uit"$verde
+echo -e $purpuriu Selectati numarul filmului dorit sau $rosu"c"$purpuriu"autati" altul";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
 read nr
 if [[ "$nr" = "r" ]];then break 3;fi;
 if [[ "$nr" = "c" ]];then break;fi;
@@ -86,23 +89,23 @@ echo -e $purpuriu
 OPTIUNE="Redati Descarcati Inregistrati Cautati Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]]; then mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -nobps -ni -forceidx -mc 0 $film1||mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -nobps -ni -forceidx -mc 0 $film2 ; break
-elif [[ "$opt" = "Descarcati" ]]; then axel -a -o $nume.flv $film1||axel -a -o $nume.flv $film2||wget -O $nume.flv $film1||wget -O $nume.flv $film2 ; break
+elif [[ "$opt" = "Descarcati" ]]; then axel -a -o $nume $film1||axel -a -o $nume $film2||wget -O $nume $film1||wget -O $nume $film2 ; break
 elif [[ "$opt" = "Cautati" ]];then clear; break;
 elif [[ "$opt" = "Reveniti" ]];then break 4;
-elif [[ "$opt" = "Inregistrati" ]]; then (wget -O $HOME/$nume.flv $film1||wget -O $HOME/$nume.flv $film2 &> /dev/null &); echo "redarea va incepe in 10 sec" ; sleep 10 ; wait $(mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume.flv||mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume.flv); killall wget ; rm $HOME/$nume.flv; exit 0;
+elif [[ "$opt" = "Inregistrati" ]]; then (wget -O $HOME/$nume.flv $film1||wget -O $HOME/$nume.flv $film2 &> /dev/null &); echo -e $rosu "redarea va incepe in 10 sec" $purpuriu; sleep 10 ; wait $(mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume.flv||mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume.flv); killall wget;
+echo -e $cyan Doriti sa pastrati inregistrarea $verde "y"$cyan"/"$rosu"n"$cyan"?"
+read rec
+if  [[ "$rec" = "n" ]]; then rm $HOME/$nume.flv; exit 0;else break 4;fi;
 elif [[ "$opt" = "Parasiti" ]]; then exit 0;
 else echo -e $rosu Ati ales gresit, mai incercati. $esc
 fi;done;done;done;fi
 #########################################################
-if [[ "$sursa" = "q" ]]; then exit 0
-else
-sur=`cat $HOME/.subscrieri|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
 #lista canalelor din sursa aleasă
 echo -e $verde "Lista canale:"
 consola=`echo $DISPLAY'a'`
 if test "$consola" = "a" ; then wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/â/a/g;s/ă/a/g;s/ț/t/g;s/ș/s/g;s/î/i/g'
-echo -e $purpuriu "Introduceti marimea ferestrei de redare si coordonatele acesteia $rosu(ex. 360 10:10) "$purpuriu
-echo -e "in caz ca acesta este un post radio alegeti orice valoare..."
+echo -e $rosu "Introduceti marimea ferestrei de redare si coordonatele acesteia (ex. 360 10:10) "
+echo -e $rosu "in caz ca acesta este un post radio alegeti orice valoare..."
 read marime coordonate
 else
 marime=360
@@ -110,22 +113,42 @@ coordonate=10:20
 wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|more
 fi
 #Alegere canal
-echo -e $cyan"Selectati numarul postului dorit sau "$rosu"r"$cyan"eveniti"";"$rosu "q"$cyan"uit"$verde
+echo -e $purpuriu Selectati numarul postului dorit sau $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit" $rosu"i"$purpuriu"nregistrati"$rosu
 read canal
 if [[ "$canal" = "r" ]]; then break;fi;
 if [[ "$canal" = "q" ]]; then clear ; exit 0; fi;
+if [[ "$canal" = "i" ]]; then echo "Alegeti postul dorit pentru inregistrare:"
+read canal2
 clear
-echo -e $verde "procesez..."
+echo inregistrez... 
+adr2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"`
+numetv=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|sed -n "${canal2}p"`
+data=`date +_%F_%H-%M-%S`
+soptest2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"|sed 's/:/ /g'|awk '{print $1}'`
+pls2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+echo $numetv
+if [[ "$pls2" = "pls" || "m3u" ]]; then list="-playlist";else list=" ";fi;
+if [[ "$soptest2" = "sop" ]]; then 
+$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer http://localhost:9901 -dumpstream -dumpfile $HOME/$numetv.avi &>/dev/null &); $(mplayer $HOME/$numetv.avi); killall sp-sc mplayer;break 4;
+
+#$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 10; wait $(wget -O $HOME/$numetv.avi  http://localhost:9901 &>/dev/null &);sleep 5; $(mplayer $HOME$numetv.avi);killall sp-sc wget;
+else
+$(mplayer $list $adr2  -dumpstream -dumpfile $HOME/$numetv$data.avi &>/dev/null & ); sleep 10 ; wait $(mplayer -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate $HOME/$numetv$data.avi); killall mplayer; break 4;
+fi;fi;
+
+############################
+if [[ "$canal" = *$NUMBER* ]];then clear
 adr=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"`
 soptest=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
 pls=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+if [[ "$pls" = "pls" || "m3u" ]]; then list="-playlist";else list=" ";fi;
+echo -e $verde "procesez..."
 if [[ "$soptest" = "sop" ]]; then 
-(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer -cache 500 -cache-min 20 -msglevel all=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate http://localhost:9901); killall sp-sc;
+$(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer -cache 500 -cache-min 20 -msglevel all=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate http://localhost:9901); killall sp-sc;
 else
-if [[ "$pls" = "pls" ]] || [[ "$pls" = "m3u" ]]; then 
-list="-playlist"
-else 
-list=" "
-fi;
 mplayer -hardframedrop -cache 500 -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate $list $adr 
-fi;fi;fi;done;done
+fi;fi;
+#############################
+
+fi;done;done
+
