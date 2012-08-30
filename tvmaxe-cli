@@ -12,8 +12,7 @@ if [ $? != 0 ]; then for i in `seq 1 2`;do
 clear;sleep 1;echo -e $rosu "! Verificati conexiunea la internet !"$esc;sleep 1;done; exit 1;
 else
 actualizare=`wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli|md5sum`
-prezent=$(pwd$0 md5sum &>/dev/null &)
-echo $prezent
+prezent=.$0|md5sum
 if [[ "$actualizare" != "$prezent" ]];then echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $purpuriu;fi;
 cat $HOME/.subscrieri|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t|more
 echo -e $cyan"Alegeti numarul subscrierii dorite:" $cyan "sau parasiti " $rosu"q"$cyan"uit"$rosu
