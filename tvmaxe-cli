@@ -14,7 +14,9 @@ else
 if [ -a $HOME/.commit_tv ]; then
 commit1=`wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}'`
 commit2=`cat $HOME/.commit_tv|sed -n '$p'`
-if [[ "$commit1" != "$commit2" ]]; then rm $HOME/.commit_tv echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $purpuriu ;fi;
+if [[ "$commit1" != "$commit2" ]]; then 
+rm $HOME/.commit_tv 
+echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $purpuriu ;fi;
 else
 wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' >> $HOME/.commit_tv
 fi;
