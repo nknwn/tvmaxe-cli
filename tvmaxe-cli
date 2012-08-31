@@ -11,9 +11,10 @@ testconnection=`wget --tries=3 --timeout=15 www.google.com -qO - &>/dev/null 2>&
 if [ $? != 0 ]; then for i in `seq 1 2`;do 
 clear;sleep 1;echo -e $rosu "! Verificati conexiunea la internet !"$esc;sleep 1;done; exit 1;
 else
-actualizare=`wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli|md5sum`
-prezent=`cat /usr/bin/tvmaxe-cli|md5sum`
-if [[ "$actualizare" != "$prezent" ]];then echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $purpuriu;fi;
+wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' >> $HOME/.commit_tv
+commit1=`wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}'`
+commit2=`cat $HOME/.commit_tv|sed -n '$p'`
+if [[ "$commit1" != "$commit2" ]]; then echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $purpuriu ;fi;
 cat $HOME/.subscrieri|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t|more
 echo -e $cyan"Alegeti numarul subscrierii dorite:" $cyan "sau parasiti " $rosu"q"$cyan"uit"$rosu
 read sursa
