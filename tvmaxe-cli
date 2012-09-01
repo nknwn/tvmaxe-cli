@@ -136,9 +136,9 @@ data=`date +_%F_%H-%M-%S`
 soptest2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"|sed 's/:/ /g'|awk '{print $1}'`
 pls2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"|sed 's/\./ /g'|awk '{ print $NF }'`
 echo $numetv
-if [[ "$pls2" = "pls" || "m3u" ]]; then list="-playlist";else list=" ";fi;
+if [[ "$pls2" = "pls" ]]||[[ "$pls2" = "m3u" ]]; then list="-playlist";else list=" ";fi;
 if [[ "$soptest2" = "sop" ]]; then 
-$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer http://localhost:9901 -dumpstream -dumpfile $HOME/$numetv.avi &>/dev/null &); $(mplayer $HOME/$numetv.avi); killall sp-sc mplayer;break 4;
+$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer http://localhost:9901 -dumpstream -dumpfile $HOME/$numetv$data.avi &>/dev/null &); $(mplayer $HOME/$numetv$data.avi); killall sp-sc mplayer;break 4;
 
 #$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 10; wait $(wget -O $HOME/$numetv.avi  http://localhost:9901 &>/dev/null &);sleep 5; $(mplayer $HOME$numetv.avi);killall sp-sc wget;
 else
@@ -150,12 +150,12 @@ if [[ "$canal" = *$NUMBER* ]];then clear
 adr=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"`
 soptest=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
 pls=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
-if [[ "$pls" = "pls" || "m3u" ]]; then list="-playlist";else list=" ";fi;
+if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]; then list="-playlist";else list=" ";fi;
 echo -e $verde "procesez..."
 if [[ "$soptest" = "sop" ]]; then 
 $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer -cache 500 -cache-min 20 -msglevel all=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate http://localhost:9901); killall sp-sc;
 else
-mplayer -hardframedrop -cache 500 -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate $list $adr 
+mplayer -hardframedrop -cache 500 -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate $list $adr
 fi;fi;
 #############################
 
