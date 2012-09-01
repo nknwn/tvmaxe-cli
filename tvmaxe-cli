@@ -20,11 +20,11 @@ echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $purpuriu 
 else
 wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' >> $HOME/.commit_tv
 fi;
-cat $HOME/.subscrieri|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t|more
+cat $HOME/.subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t|more
 echo -e $cyan"Alegeti numarul subscrierii dorite:" $cyan "sau parasiti " $rosu"q"$cyan"uit"$rosu
 read sursa
 if [[ "$sursa" = "q" ]]; then exit 0; fi;
-sur=`cat $HOME/.subscrieri|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
+sur=`cat $HOME/.subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
 if [[ "$sur" = "filme" ]];then
 while :;do 
 while :;do
