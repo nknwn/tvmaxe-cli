@@ -98,7 +98,7 @@ echo -e $purpuriu
 OPTIUNE="Redati Descarcati Inregistrati Cautati Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]]; then mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -nobps -ni -forceidx -mc 0 $film1||mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -nobps -ni -forceidx -mc 0 $film2 ; break
-elif [[ "$opt" = "Descarcati" ]]; then axel -a -o $nume $film1||axel -a -o $nume $film2||wget -O $nume $film1||wget -O $nume $film2 ; break
+elif [[ "$opt" = "Descarcati" ]]; then axel -a -o $nume.flv $film1||axel -a -o $nume.flv $film2||wget -O $nume.flv $film1||wget -O $nume.flv $film2 ; break
 elif [[ "$opt" = "Cautati" ]];then clear; break;
 elif [[ "$opt" = "Reveniti" ]];then break 4;
 elif [[ "$opt" = "Inregistrati" ]]; then (wget -O $HOME/$nume.flv $film1||wget -O $HOME/$nume.flv $film2 &> /dev/null &); echo -e $rosu "redarea va incepe in 10 sec" $purpuriu; sleep 10 ; wait $(mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume.flv||mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume.flv); killall wget;
