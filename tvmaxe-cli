@@ -19,7 +19,7 @@ rm $HOME/.commit_tv
 echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $rosu
 echo -e Pentru a actuaiza doar tvmaxe-cli alegeti '"a"'
 echo -e Pentru a actualiza si subscrierele alegeti '"as"'
-echo -e Atentie actualizarea '"ab"' presupune suprascrierea fisierului '"~/subscrieri"';fi;
+echo -e Atentie! actualizarea '"ab"' presupune suprascrierea fisierului '"~/subscrieri"';fi;
 else
 wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' >> $HOME/.commit_tv
 fi;
@@ -30,7 +30,7 @@ if [[ "$sursa" = "q" ]];then exit 0; fi;
 if [[ "$sursa" = "a" ]];then 
 su -c 'wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli > /usr/bin/tvmaxe-cli';exit 0;fi;
 if [[ "$sursa" = "as" ]];then
-wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.subscriei
+wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.subscrieri
 su -c 'wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli > /usr/bin/tvmaxe-cli';exit 0;fi;
 sur=`cat $HOME/.subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
 if [[ "$sur" = "filme" ]];then
