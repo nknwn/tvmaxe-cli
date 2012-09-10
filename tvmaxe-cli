@@ -19,7 +19,7 @@ rm $HOME/.commit_tv
 echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $rosu
 echo -e Pentru a actuaiza doar tvmaxe-cli alegeti '"a"'
 echo -e Pentru a actualiza si subscrierele alegeti '"as"'
-echo -e Atentie! actualizarea '"ab"' presupune suprascrierea fisierului '"~/subscrieri"';fi;
+echo -e Atentie! actualizarea '"as"' presupune suprascrierea fisierului '"~/subscrieri"$purpuriu';fi;
 else
 wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' >> $HOME/.commit_tv
 fi;
