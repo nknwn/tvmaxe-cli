@@ -9,16 +9,15 @@ echo  "  | |   )\_/( |  _  | /( )\  ) | ( | _) ";echo  "  )_(    \_/  )_( )_()_/
 echo v.0.3.7
 testconnection=`wget --tries=3 --timeout=15 www.google.com -qO - &>/dev/null 2>&1`
 if [ $? != 0 ]; then for i in `seq 1 2`;do 
-clear;sleep 1;echo -e $rosu "! Verificati conexiunea la internet !"$esc;sleep 1;done; exit 1;
-else
+clear;sleep 1;echo -e $rosu "! Verificati conexiunea la internet !"$esc;sleep 1;done; exit 1;fi;
+if [ ! -a $HOME/.subscrieri ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > ~/.subscrieri;fi
 if [ -a $HOME/.commit_tv ]; then
 commit1=`wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}'`
 commit2=`cat $HOME/.commit_tv|sed -n '$p'`
 if [[ "$commit1" != "$commit2" ]]; then 
 rm $HOME/.commit_tv 
 echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $rosu
-echo -e Pentru a actuaiza doar tvmaxe-cli alegeti '"a"'
-echo -e Pentru a actualiza si subscrierele alegeti '"as"'
+echo -e Pentru a actuaiza doar tvmaxe-cli alegeti '"a"', pentru a actualiza si subscrierile alegeti '"as"'
 echo -e Atentie! actualizarea '"as"' presupune suprascrierea fisierului '"~/subscrieri"'$purpuriu;fi;
 else
 wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' >> $HOME/.commit_tv
@@ -38,7 +37,7 @@ while :;do
 while :;do
 clear
 echo -e $purpuriu Filme si seriale noi: www.990.ro$verde
-wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//'|nl
+wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//'|nl|more -d
 echo -e $purpuriu Selectati numarul filmului dorit sau $rosu"c"$purpuriu"autati" altul";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$rosu
 read noutate
 if [[ "$noutate" = "r" ]]; then break 3;fi;
@@ -53,7 +52,7 @@ descriere=`wget -qO - http://www.990.ro/$adresa|sed -n "/colspan='2'/,/\/blockqu
 fi;echo -e $verde
 ###############################################################
 if [[ "$noutate" = "c" ]]; then read -p "Ce film cautam? " titlu
-wget -qO - "http://www.990.ro/cauta2.php?text=$titlu&submit=Cauta"|sed -n '/content_wrapper/,/post_title/ p'|grep titlu|sed 's/<[^>]*>/ /g;s/^[\t]*//'|nl|more
+wget -qO - "http://www.990.ro/cauta2.php?text=$titlu&submit=Cauta"|sed -n '/content_wrapper/,/post_title/ p'|grep titlu|sed 's/<[^>]*>/ /g;s/^[\t]*//'|nl|more -d
 filme=`wget -qO - "http://www.990.ro/cauta2.php?text=$titlu&submit=Cauta"|sed -n '/content_wrapper/,/post_title/ p'|grep titlu`
 if [[ -z $filme ]]; then clear
 for i in `seq 1 2`;do
@@ -74,7 +73,7 @@ nume=`wget -qO - "http://www.990.ro/cauta2.php?text=$titlu&submit=Cauta"|sed -n 
 descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/ /g'`
 #################################################################
 else
-wget -qO - http://www.990.ro/$adresa2|sed -n '/show_faces/,/show_faces/ p'|sed "s/'/\n /g"|sed 's/<[^>]*>/ /g;s/>/\n/;s/ /_/g;s/</ /'|grep vizionari|awk '{print $1}'|sed 's/_/ /g'|nl|more
+wget -qO - http://www.990.ro/$adresa2|sed -n '/show_faces/,/show_faces/ p'|sed "s/'/\n /g"|sed 's/<[^>]*>/ /g;s/>/\n/;s/ /_/g;s/</ /'|grep vizionari|awk '{print $1}'|sed 's/_/ /g'|nl|more -d
 echo -e $purpuriu Selectati numarul filmului dorit sau $rosu"c"$purpuriu"autati" altul";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
 read nr
 if [[ "$nr" = "r" ]];then break 3;fi;
@@ -121,20 +120,20 @@ consola=`echo $DISPLAY'a'`
 echo -e $verde "Lista canale:"
 if [[ "$consola" = "a" ]];then 
 if [[ "$sur" = "cooltv" ]];then
-wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4}'|sed 's/^...//;$d;s/-/_/g'|nl|column -c 30|column -t|more
+wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4}'|sed 's/^...//;$d;s/-/_/g'|nl|column -c 30|column -t|more -d
 else
-wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/â/a/g;s/ă/a/g;s/ț/t/g;s/ș/s/g;s/î/i/g'
+wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/â/a/g;s/ă/a/g;s/ț/t/g;s/ș/s/g;s/î/i/g'|more -d
 fi;
 echo -e $rosu "Introduceti marimea ferestrei de redare si coordonatele acesteia (ex. 360 10:10) "
-echo -e $rosu "in caz ca acesta este un post radio alegeti orice valoare..."
+echo -e $rosu "in caz ca acesta este un post radio alegeti orice valoare (ex. 1 1)"
 read marime coordonate
 else
 marime=360
 coordonate=10:20
 if [[ "$sur" = "cooltv" ]];then
-wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4}'|sed 's/^...//;$d;s/-/_/g'|nl|column -c 30|column -t|more
+wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4}'|sed 's/^...//;$d;s/-/_/g'|nl|column -c 30|column -t|more -d
 else
-wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|more
+wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|more -d
 fi;fi;
 echo -e $purpuriu Selectati numarul postului dorit sau $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit" $rosu"i"$purpuriu"nregistrati"$rosu
 read canal
@@ -144,31 +143,31 @@ if [[ "$canal" = "i" ]]; then echo "Alegeti postul dorit pentru inregistrare:"
 read canal2
 clear
 echo inregistrez... 
-echo La inregistrarea adreselor sop pot aparea erori,
-echo insa daca programul nu se intrerupe, asteptati un pic...
 if [[ "$sur" = "cooltv" ]];then
 adr2=`wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//;$d'|awk '{print $2}'|sed -n "${canal2}p"`
+soptest2=sop
 numetv=`wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4}'|sed 's/^...//;$d;s/-/_/g'|sed -n "${canal2}p"`
 else
 adr2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"`
 numetv=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|sed -n "${canal2}p"`
-fi;
-data=`date +_%F_%H-%M-%S`
 soptest2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"|sed 's/:/ /g'|awk '{print $1}'`
 pls2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+fi;
+data=`date +_%F_%H-%M-%S`
 echo $numetv
 if [[ "$pls2" = "pls" ]]||[[ "$pls2" = "m3u" ]]; then list="-playlist";else list=" ";fi;
 if [[ "$soptest2" = "sop" ]]; then 
-$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer http://localhost:9901 -dumpstream -dumpfile $HOME/$numetv$data.mp4 &); $(mplayer -osdlevel 2 $HOME/$numetv$data.mp4); killall sp-sc mplayer;break 4;
-#$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 10; wait $(wget -O $HOME/$numetv$data.mp4  http://localhost:9901 &>/dev/null &);sleep 5; $(mplayer -osdlevel 2 $HOME$numetv$data.mp4 );killall sp-sc wget;
+echo In momentul inregistrarii pot aparea erori,
+echo insa daca programul nu se intrerupe, asteptati...
+$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer -cache 500 http://localhost:9901 -dumpstream -dumpfile $HOME/$numetv$data.mp4 &>/dev/null &);sleep 5;wait $(mplayer -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -osdlevel 2 $HOME/$numetv$data.mp4); killall sp-sc mplayer;break 4;
 else
-$(mplayer $list $adr2  -dumpstream -dumpfile $HOME/$numetv$data.mp4 &>/dev/null & ); sleep 10 ; wait $(mplayer -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -osdlevel 2 $HOME/$numetv$data.mp4); killall mplayer; break 4;
+$(mplayer $list $adr2 -dumpstream -dumpfile $HOME/$numetv$data.mp4 &>/dev/null & ); sleep 10 ; wait $(mplayer -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -osdlevel 2 $HOME/$numetv$data.mp4); killall mplayer; break 4;
 fi;fi;
 ############################
 if [[ "$canal" = *$NUMBER* ]];then clear
 if [[ "$sur" = "cooltv" ]];then
 adr=`wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//;$d'|awk '{print $2}'|sed -n "${canal}p"`
-soptest=`wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//;$d'|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
+soptest=sop
 else
 adr=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"`
 soptest=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
@@ -180,8 +179,7 @@ if [[ "$soptest" = "sop" ]]; then
 $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer -cache 500 -cache-min 20 -msglevel all=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate http://localhost:9901); killall sp-sc
 else
 mplayer -hardframedrop -cache 500 -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate $list $adr
-fi;fi;
-#############################
-fi;done;done
+fi;fi;done;done
+
 
 
