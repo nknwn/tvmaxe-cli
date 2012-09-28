@@ -7,7 +7,7 @@ clear
 echo -e $purpuriu "_____  _   _  _   _    _    _   _  ___ ";echo  ")__ __(\ ( ) /) \_/ (  )_\  ) ( ) () __("
 echo  "  | |   )\_/( |  _  | /( )\  ) | ( | _) ";echo  "  )_(    \_/  )_( )_()_/ \_()_( )_()___(";echo;echo "              ___  __    ____ ";echo "             / __)(  )  (_  _)";echo "            ( (__  )(__  _)(_ ";echo "             \___)(____)(____)"
 echo
-echo v.0.3.8 comit: `cat $HOME/.commit_tv|sed -n '$p'`
+echo v.0.3.8 commit: `cat $HOME/.commit_tv|sed -n '$p'`
 testconnection=`wget --tries=3 --timeout=15 www.google.com -qO - &>/dev/null 2>&1`
 if [ $? != 0 ]; then for i in `seq 1 2`;do 
 clear;sleep 1;echo -e $rosu "! Verificati conexiunea la internet !"$esc;sleep 1;done; exit 1;fi;
@@ -130,12 +130,20 @@ vtag=`cat /tmp/surse|sed -n '3p'`
 rez=.240
 ext=.mp4
 film1="$host"u$uid/video/$vtag$rez$ext
-echo film: $film1
 else
 film1=`wget -qO - $upload|grep flv|sed "s/ /_/;s/'/ /g"|awk '{print $4}'`
 #film2=`wget -qO - $upload1|grep "video|"|sed 's/ /_/g;s/|/ /g'|awk '{print "http://"$10"."$9"."$8"."$7":"$20"/d/"$19"/video.flv"}'`
 ext=.flv
-echo film: $film1
+fi;
+################################################################
+echo -e $verde$descriere
+consola=`echo $DISPLAY'a'`
+if [[ "$consola" = "a" ]]; then
+echo -e $purpuriu Introduceti marimea ferestrei si coordonatele de redare $rosu "(ex. 360 10:10)" 
+read marime coordonate
+else
+marime=360
+coordonate=10:20
 fi;
 ################################################################
 echo -e $purpuriu
