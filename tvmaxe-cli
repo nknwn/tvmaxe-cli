@@ -5,26 +5,25 @@ while :;do
 while :;do
 clear
 echo -e $purpuriu "_____  _   _  _   _    _    _   _  ___ ";echo  ")__ __(\ ( ) /) \_/ (  )_\  ) ( ) () __("
-echo  "  | |   )\_/( |  _  | /( )\  ) | ( | _) ";echo  "  )_(    \_/  )_( )_()_/ \_()_( )_()___(";echo;echo "              ___  __    ____ ";echo "             / __)(  )  (_  _)";echo "            ( (__  )(__  _)(_ ";echo "             \___)(____)(____)"
-echo
-echo v.0.3.9b commit: `cat $HOME/.commit_tv|sed -n '$p'`
+echo  "  | |   )\_/( |  _  | /( )\  ) | ( | _) ";echo  "  )_(    \_/  )_( )_()_/ \_()_( )_()___(";echo;echo "              ___  __    ____ ";echo "             / __)(  )  (_  _)";echo "            ( (__  )(__  _)(_ ";echo "             \___)(____)(____)";echo
 testconnection=`wget --tries=3 --timeout=15 www.google.com -qO - &>/dev/null 2>&1`
 if [ $? != 0 ]; then for i in `seq 1 2`;do 
 clear;sleep 1;echo -e $rosu "! Verificati conexiunea la internet !"$esc;sleep 1;done; exit 1;fi;
-if [ ! -f $HOME/.subscrieri ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > ~/.subscrieri;fi
-if [ -f $HOME/.commit_tv ]; then
+mkdir -p $HOME/'.'tvmaxe-cli
+wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' >> $HOME/.tvmaxe-cli/.commit_tv
+if [ ! -f $HOME/.tvmaxe-cli/subscrieri ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.tvmaxe-cli/subscrieri;fi
+if [ -f $HOME/.tvmaxe-cli/.commit_tv ]; then
 commit1=`wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}'`
-commit2=`cat $HOME/.commit_tv|sed -n '$p'`
-if [ ! -f $HOME/.commit_tv ];then wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' > $HOME/.commit_tv; fi;
+commit2=`cat $HOME/.tvmaxe-cli/.commit_tv|sed -n '$p'`
+if [ ! -f $HOME/.tvmaxe-cli/.commit_tv ];then wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' > $HOME/.tvmaxe-cli/.commit_tv; fi;
+echo v.0.3.9b commit: `cat $HOME/.tvmaxe-cli/.commit_tv|sed -n '$p'`;echo
 if [[ "$commit1" != "$commit2" ]]; then 
-rm $HOME/.commit_tv 
+> $HOME/.tvmaxe-cli/.commit_tv 
 echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $rosu
 echo -e Pentru a actuaiza doar tvmaxe-cli alegeti '"a"', pentru a actualiza si subscrierile alegeti '"as"'
-echo -e Atentie! actualizarea '"as"' presupune suprascrierea fisierului '"~/subscrieri"'$purpuriu;fi;
-else
-wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' >> $HOME/.commit_tv
-fi;
-cat $HOME/.subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t|more -d
+echo -e Atentie! actualizarea '"as"' presupune suprascrierea fisierului '"subscrieri"'$purpuriu;wget -qO - http://pastebin.com/raw.php?i=zadMXuWU;echo
+fi;fi;
+cat $HOME/.tvmaxe-cli/subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t|more -d
 echo -e $cyan"Alegeti numarul subscrierii dorite:" $cyan "sau parasiti " $rosu"q"$cyan"uit"$rosu
 read sursa
 if [[ "$sursa" = "q" ]];then exit 0; fi;
@@ -33,7 +32,7 @@ sudo -i 'wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli > 
 if [[ "$sursa" = "as" ]];then
 wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.subscrieri
 su -c 'wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli > /usr/bin/tvmaxe-cli';exit 0;fi;
-sur=`cat $HOME/.subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
+sur=`cat $HOME/.tvmaxe-cli/subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
 if [[ "$sur" = "filme" ]];then
 while :;do
 while :;do
@@ -142,8 +141,13 @@ testfilm=`wget --spider $film1 -qO - &>/dev/null 2>&1`
 if [ $? != 0 ]; then for i in `seq 1 2`;do 
 clear;sleep 1;echo -e $rosu "! Se pare ca fisierul nu mai exista !"$verde;sleep 1;done;break;fi;
 ################################################################
-echo -e $nume
-echo -e $descriere
+echo -e $verdef$nume$esc
+echo -e $verde$descriere
+################################################################
+echo -e $purpuriu
+OPTIUNE="Redati Descarcati Inregistrati Cautati Reveniti Parasiti"
+select opt in $OPTIUNE;do
+if [[ "$opt" = "Redati" ]]; then clear
 consola=`echo $DISPLAY'a'`
 if [[ "$consola" = "a" ]]; then
 echo -e $purpuriu Introduceti marimea ferestrei si coordonatele de redare $rosu "(ex. 360 10:10)" 
@@ -152,16 +156,26 @@ else
 marime=360
 coordonate=10:20
 fi;
-################################################################
-echo -e $purpuriu
-OPTIUNE="Redati Descarcati Inregistrati Cautati Reveniti Parasiti"
-select opt in $OPTIUNE;do
-if [[ "$opt" = "Redati" ]]; then mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -nobps -ni -forceidx -mc 0 $film1||mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -nobps -ni -forceidx -mc 0 $film2 ; break
+echo -e $verde"Redau:" $verdef$nume...$esc
+mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -nobps -ni -forceidx -mc 0 $film1 &>/dev/null
+clear;echo -e $verde"Ati vizionat: "$verdef$nume$esc;sleep 3;break
 elif [[ "$opt" = "Descarcati" ]]; then axel -a -o $HOME/$nume$ext $film1||axel -a -o $HOME/$nume$ext $film2||wget -O $HOME/$nume$ext $film1||wget -O $HOME/$nume$ext $film2 ; break
 elif [[ "$opt" = "Cautati" ]];then clear; break;
 elif [[ "$opt" = "Reveniti" ]];then break 4;
-elif [[ "$opt" = "Inregistrati" ]]; then (wget -O $HOME/$nume$ext $film1||wget -O $HOME/$nume$ext $film2 &> /dev/null &); echo -e $rosu "redarea va incepe in 10 sec" $purpuriu; sleep 10 ; wait $(mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume$ext||mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume$ext); killall wget;
-echo -e $cyan Doriti sa pastrati inregistrarea $verde "y"$cyan"/"$rosu"n"$cyan"?"
+elif [[ "$opt" = "Inregistrati" ]]; then clear
+consola=`echo $DISPLAY'a'`
+if [[ "$consola" = "a" ]]; then
+echo -e $purpuriu Introduceti marimea ferestrei si coordonatele de redare $rosu "(ex. 360 10:10)" 
+read marime coordonate
+else
+marime=360
+coordonate=10:20
+fi;
+echo -e $verde"Inregistrez:" $verdef$nume...$esc
+
+$(wget -O $HOME/$nume$ext $film1 &>/dev/null &);echo -e $rosu"...redarea va incepe in 10 sec" $purpuriu; sleep 10 ; wait $(mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume$ext &>/dev/null); killall wget;
+clear;echo -e $verde"Ati vizionat: "$verdef$nume$esc;sleep 3;break
+echo -e $cyan"Doriti sa pastrati inregistrarea"$verde" y/n"$cyan"?"
 read rec
 if  [[ "$rec" = "n" ]]; then rm $HOME/$nume$ext; exit 0;else break 4;fi;
 elif [[ "$opt" = "Parasiti" ]]; then exit 0;
@@ -172,14 +186,17 @@ if [[ "$sur" = "youtube" ]];then
 while :;do
 while :;do
 clear
-echo -e $purpuriu Introduceti numele piesei dorite sau redati o $rosu"l"$purpuriu"ista" existenta, $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
+echo -e $purpuriu"Introduceti numele piesei dorite sau redati o" $rosu"l"$purpuriu"ista" existenta, $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$rosu
 read titlu
 if [[ "$titlu" = "r" ]];then break 3;fi;
 if [[ "$titlu" = "q" ]];then exit 0;fi;
-if [[ "$titlu" = "l" ]];then
+if [[ "$titlu" = "l" ]];then clear
+echo -e $purpuriu"Liste existente:"$verde
 ls $HOME/.tvmaxe-cli/playlist/|nl
-echo -e $purpuriu "Alegeti lista pentru redare:"$verde
-read pl
+echo -e $purpuriu"Alegeti lista pentru redare:"$verde
+read pl;clear
+lista=`ls $HOME/.tvmaxe-cli/playlist/|sed -n "${pl}p"`
+echo -e $verdef $lista $esc $verde
 fisier=`ls $HOME/.tvmaxe-cli/playlist/|sed -n "${pl}p"`
 piesepl=`cat $HOME/.tvmaxe-cli/playlist/$fisier|wc -l`
 OPTIUNE="Redati Redati_audio Descarcati_lista Stergeti_lista Reveniti Parasiti"
@@ -187,7 +204,7 @@ select opt in $OPTIUNE; do
 if [[ "$opt" = "Redati" ]];then
 consola=`echo $DISPLAY'a'`
 if [[ "$consola" = "a" ]]; then
-echo -e $purpuriu Introduceti marimea ferestrei si coordonatele de redare $rosu "(ex. 360 10:10)" 
+echo -e $purpuriu"Introduceti marimea ferestrei si coordonatele de redare" $rosu "(ex. 360 10:10)" 
 read marime coordonate
 else
 marime=360
@@ -199,8 +216,8 @@ nume=`wget -qO - "$adresa"|grep eow-title|sed 's/ /_/g;s/"/ /g'|awk '{print $8}'
 wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http > /tmp/yt
 piesa=`cat /tmp/yt`
 echo -e Redau $verdef $nume...$esc $verde
-mplayer -cache 500 -msglevel all=0 -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate -osdlevel 3 $piesa &>/dev/null
-done; break;
+mplayer -cache 500 -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate -osdlevel 3 $piesa &>/dev/null
+clear;done; break;
 elif [[ "$opt" = "Redati_audio" ]];then
 for p in `seq 1 $piesepl` ; do
 adresa=`cat $HOME/.tvmaxe-cli/playlist/$fisier|sed -n "${p}p"`
@@ -208,8 +225,8 @@ nume=`wget -qO - "$adresa"|grep eow-title|sed 's/ /_/g;s/"/ /g'|awk '{print $8}'
 wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http > /tmp/yt
 piesa=`cat /tmp/yt`
 echo -e Redau $verdef $nume...$esc $verde
-mplayer -cache 500 -msglevel all=0 -ao alsa -novideo $piesa &>/dev/null
-done; break;
+mplayer -cache 500 -ao alsa -novideo $piesa &>/dev/null
+clear;done; break;
 elif [[ "$opt" = "Descarcati_lista" ]]; then
 for p in `seq 1 $piesepl` ; do
 adresa=`cat $HOME/.tvmaxe-cli/playlist/$fisier|sed -n "${p}p"`
@@ -217,21 +234,21 @@ nume=`wget -qO - "$adresa"|grep eow-title|sed 's/ /_/g;s/"/ /g'|awk '{print $8}'
 wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http > /tmp/yt
 piesa=`cat /tmp/yt`
 wget -O $nume.flv $piesa
-done; break;
+clear;done; break;
 elif [[ "$opt" = "Stergeti_lista" ]]; then rm $HOME/.tvmaxe-cli/playlist/$fisier
 break
 elif [[ "$opt" = "Reveniti" ]];then break 2;
 elif [[ "$opt" = "Parasiti" ]]; then exit;
-else echo -e $rosu Ati ales gresit, mai incercati. $esc
+else echo -e $rosu"Ati ales gresit, mai incercati." $esc
 fi;done;fi;
 pagini=`wget -qO -  http://www.youtube.com/results?search_query="$titlu"|grep data-page|wc -l`
 > /tmp/yt
 for a in `seq 1 $pagini` ; do
 wget -qO - "http://www.youtube.com/results?search_query='$titlu'&page=$a"|grep item-title|grep video|sed 's/ /_/g;s/"/ /g'|sed 's/\&amp;quot;//g'|awk '{print $4,"http://www.youtube.com/watch?v="$12,$10,$8}' >> /tmp/yt
 done
-if [ -z `cat /tmp/yt`];then echo -e $rosu"Lipseste sau necesita autentificare";break;fi;
+echo -e $verde
 cat /tmp/yt|awk '{print $1}'|nl|column -t|sed 's/_/ /g;s/\&lt;b&gt;//g'|sed 's/\#39//g'|sed 's/&amp//'|more -d
-echo -e $purpuriu Selectati numarul pieselor dorite sau $rosu"c"$purpuriu"autati" altele";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
+echo -e $purpuriu"Selectati numarul pieselor dorite pentru redare sau"$rosu"c"$purpuriu"autati" altele";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
 read nr
 if [[ "$nr" = "r" ]];then break 3;fi;
 if [[ "$nr" = "c" ]];then break;fi;
@@ -242,7 +259,7 @@ select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]];then
 consola=`echo $DISPLAY'a'`
 if [[ "$consola" = "a" ]]; then
-echo -e $purpuriu Introduceti marimea ferestrei si coordonatele de redare $rosu "(ex. 360 10:10)" 
+echo -e $purpuriu"Introduceti marimea ferestrei si coordonatele de redare"$rosu "(ex. 360 10:10)" $verde
 read marime coordonate
 else
 marime=360
@@ -253,21 +270,27 @@ adresa=`cat /tmp/yt|awk '{print $2}'|sed -n "${p}p"`
 wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http >> /tmp/yt
 cat /tmp/yt|awk '{print "|Nume: "$1,"| Utilizator: "$3,"| Durata: "$4"|"}'|sed 's/_/ /g'|sed -n "${p}p"
 piesa=`cat /tmp/yt|sed -n '$p'`
-nume=`cat /tmp/yt|awk '{print $1}'|sed -n "${p}p"`.flv
 nume1=`cat /tmp/yt|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
-echo -e $verde Redau: $verdef $nume1... $esc $verde
-mplayer -cache 500 -msglevel all=0 -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate  -osdlevel 3 $piesa &>/dev/null
-done; break
+testpiesa=`wget --spider $piesa -qO - &>/dev/null 2>&1`
+if [ $? != 0 ]; then for i in `seq 1 2`;do 
+clear;sleep 1;echo -e $rosu"! Se pare ca fisierul nu mai exista sau necesita autentificare!"$verde;sleep 1;done;
+else
+echo -e $verde"Redau: "$verdef $nume1... $esc $verde
+mplayer -cache 500 -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate  -osdlevel 3 $piesa &>/dev/null
+fi;done; break
 elif [[ "$opt" = "Redati_audio" ]];then clear
 for p in $nr ; do
 adresa=`cat /tmp/yt|awk '{print $2}'|sed -n "${p}p"`
 wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http >> /tmp/yt
 cat /tmp/yt|awk '{print "|Nume: "$1,"| Utilizator: "$3,"| Durata: "$4"|"}'|sed 's/_/ /g'|sed -n "${p}p"
 piesa=`cat /tmp/yt|sed -n '$p'`
-nume=`cat /tmp/yt|awk '{print $1}'|sed -n "${p}p"`.flv
 nume1=`cat /tmp/yt|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
-echo -e $verde Redau: $verdef $nume1...$esc $verde
-mplayer -novideo -ao alsa $piesa &>/dev/null;done;break
+testpiesa=`wget --spider $piesa -qO - &>/dev/null 2>&1`
+if [ $? != 0 ]; then for i in `seq 1 2`;do 
+clear;sleep 1;echo -e $rosu"! Se pare ca fisierul nu mai exista sau necesita autentificare!"$verde;sleep 1;done;
+else
+echo -e $verde"Redau: "$verdef $nume1...$esc $verde
+mplayer -novideo -ao alsa $piesa &>/dev/null;fi;done;break
 elif [[ "$opt" = "Descarcati" ]];then
 for p in $nr ; do
 adresa=`cat /tmp/yt|awk '{print $2}'|sed -n "${p}p"`
@@ -275,9 +298,12 @@ wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%
 cat /tmp/yt|awk '{print "|Nume: "$1,"| Utilizator: "$3,"| Durata: "$4"|"}'|sed 's/_/ /g'|sed -n "${p}p"
 piesa=`cat /tmp/yt|sed -n '$p'`
 nume=`cat /tmp/yt|awk '{print $1}'|sed -n "${p}p"`.flv
-nume1=`cat /tmp/yt|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
-echo -e $verde Descarc: $verdef $nume1"..."$esc $purpuriu
-wget -O $HOME/$nume $piesa;done;break
+testpiesa=`wget --spider $piesa -qO - &>/dev/null 2>&1`
+if [ $? != 0 ]; then for i in `seq 1 2`;do 
+clear;sleep 1;echo -e $rosu "! Se pare ca fisierul nu mai exista sau necesita autentificare!"$verde;sleep 1;done;
+else
+echo -e $verde"Descarc: "$verdef $nume1"..."$esc $purpuriu
+wget -O $HOME/$nume $piesa;fi;done;break
 elif [[ "$opt" = "Playlist" ]];then
 echo -e $verde "Liste existente: "
 mkdir -p $HOME/'.'tvmaxe-cli/playlist/
@@ -290,7 +316,7 @@ echo $adresa >> $HOME/'.'tvmaxe-cli/playlist/$lista.pl
 done;break;
 elif [[ "$opt" = "Reveniti" ]];then break 2;
 elif [[ "$opt" = "Parasiti" ]];then exit;
-else echo -e $rosu Ati ales gresit, mai incercati. $esc
+else echo -e $rosu"Ati ales gresit, mai incercati."$esc
 fi;done;
 done;done;fi;
 
@@ -314,7 +340,7 @@ wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk 
 else
 wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|more -d
 fi;fi;
-echo -e $purpuriu Selectati numarul postului dorit sau $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit" $rosu"i"$purpuriu"nregistrati"$rosu
+echo -e $purpuriu"Selectati numarul postului dorit sau" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit" $rosu"i"$purpuriu"nregistrati"$rosu
 read canal
 if [[ "$canal" = "r" ]]; then break;fi;
 if [[ "$canal" = "q" ]]; then clear ; exit 0; fi;
@@ -336,8 +362,6 @@ data=`date +_%F_%H-%M-%S`
 echo $numetv
 if [[ "$pls2" = "pls" ]]||[[ "$pls2" = "m3u" ]]; then list="-playlist";else list=" ";fi;
 if [[ "$soptest2" = "sop" ]]; then 
-echo In momentul inregistrarii pot aparea erori,
-echo insa daca programul nu se intrerupe, asteptati...
 $(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer -cache 500 http://localhost:9901 -dumpstream -dumpfile $HOME/$numetv$data.mp4 &>/dev/null &);sleep 5;wait $(mplayer -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -osdlevel 2 $HOME/$numetv$data.mp4); killall sp-sc mplayer;break 4;
 else
 $(mplayer $list $adr2 -dumpstream -dumpfile $HOME/$numetv$data.mp4 &>/dev/null & ); sleep 10 ; wait $(mplayer -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate -osdlevel 2 $HOME/$numetv$data.mp4); killall mplayer; break 4;
@@ -353,9 +377,9 @@ soptest=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print
 pls=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
 fi;
 if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]; then list="-playlist";else list=" ";fi;
-echo -e $verde "procesez..."
+echo -e $verde"procesez..."
 if [[ "$soptest" = "sop" ]]; then 
-$(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer -cache 500 -cache-min 20 -msglevel all=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate http://localhost:9901); killall sp-sc
+$(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer -cache 500 -cache-min 20 -msglevel all=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate http://localhost:9901 &>/dev/null); killall sp-sc
 else
 mplayer -hardframedrop -cache 500 -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate $list $adr
 fi;fi;done;done
