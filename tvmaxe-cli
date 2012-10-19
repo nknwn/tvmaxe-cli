@@ -21,10 +21,11 @@ fi
 }
 mkdir -p $HOME/'.'tvmaxe-cli
 if [ ! -f $HOME/.tvmaxe-cli/subscrieri ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.tvmaxe-cli/subscrieri;fi
+if [ ! -f $HOME/.tvmaxe-cli/.commit_tv ];then wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' > $HOME/.tvmaxe-cli/.commit_tv; fi;
 if [ -f $HOME/.tvmaxe-cli/.commit_tv ]; then
 commit1=`wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}'`
 commit2=`cat $HOME/.tvmaxe-cli/.commit_tv|sed -n '$p'`
-if [ ! -f $HOME/.tvmaxe-cli/.commit_tv ];then wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' > $HOME/.tvmaxe-cli/.commit_tv; fi;
+
 echo v.0.3.9b commit: `cat $HOME/.tvmaxe-cli/.commit_tv|sed -n '$p'`;echo
 if [[ "$commit1" != "$commit2" ]]; then 
 > $HOME/.tvmaxe-cli/.commit_tv 
