@@ -20,7 +20,6 @@ coordonate=10:20
 fi
 }
 mkdir -p $HOME/'.'tvmaxe-cli
-wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' >> $HOME/.tvmaxe-cli/.commit_tv
 if [ ! -f $HOME/.tvmaxe-cli/subscrieri ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.tvmaxe-cli/subscrieri;fi
 if [ -f $HOME/.tvmaxe-cli/.commit_tv ]; then
 commit1=`wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}'`
@@ -38,7 +37,7 @@ echo -e $cyan"Alegeti numarul subscrierii dorite:" $cyan "sau parasiti " $rosu"q
 read sursa
 if [[ "$sursa" = "q" ]];then exit 0; fi;
 if [[ "$sursa" = "a" ]];then 
-sudo -i 'wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli > /usr/bin/tvmaxe-cli';exit 0;fi;
+su -c 'wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli > /usr/bin/tvmaxe-cli';exit 0;fi;
 if [[ "$sursa" = "as" ]];then
 wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.subscrieri
 su -c 'wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli > /usr/bin/tvmaxe-cli';exit 0;fi;
