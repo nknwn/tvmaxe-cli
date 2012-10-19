@@ -25,10 +25,9 @@ if [ ! -f $HOME/.tvmaxe-cli/.commit_tv ];then wget -qO - https://github.com/nknw
 if [ -f $HOME/.tvmaxe-cli/.commit_tv ]; then
 commit1=`wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}'`
 commit2=`cat $HOME/.tvmaxe-cli/.commit_tv|sed -n '$p'`
-
 echo v.0.3.9b commit: `cat $HOME/.tvmaxe-cli/.commit_tv|sed -n '$p'`;echo
 if [[ "$commit1" != "$commit2" ]]; then 
-> $HOME/.tvmaxe-cli/.commit_tv 
+wget -qO - https://github.com/nknwn/tvmaxe-cli|grep '"sha"'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $5}' > $HOME/.tvmaxe-cli/.commit_tv
 echo -e $rosu"Actualizare: "$cyan http://nknwn.github.com/tvmaxe-cli/ $rosu
 echo -e Pentru a actuaiza doar tvmaxe-cli alegeti '"a"', pentru a actualiza si subscrierile alegeti '"as"'
 echo -e Atentie! actualizarea '"as"' presupune suprascrierea fisierului '"subscrieri"'$purpuriu;wget -qO - http://pastebin.com/raw.php?i=zadMXuWU;echo
