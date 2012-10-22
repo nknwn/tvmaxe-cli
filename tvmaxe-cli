@@ -376,38 +376,50 @@ done;done;fi;
 if [[ "$sur" = "divertisment" ]];then
 while :;do
 while :;do
-clear;echo -e $purpuriu www.220.ro/funny/top-saptamana-votate/$verde
-wget -qO - http://www.220.ro/funny/top-saptamana-votate/|grep data-href|grep title|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'|nl
+divertisment(){
+nume=`cat /tmp/yt|awk '{print $1}'|sed -n "${nr}p"`
+adresa=`cat /tmp/yt|awk '{print $2}'|sed -n "${nr}p"`
+testt=`cat /tmp/yt|awk '{print $3}'|sed -n "${nr}p"`
+if [[ "$testt" = "www.220.ro" ]];then
+funny=`wget -qO - $adresa|grep source|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'`;fi
+if [[ "$testt" = "www.trilulilu.ro" ]];then
+echo `wget -qO - "$adresa"|grep userid|sed 's/ /_/g;s/,/\n/g'|grep 'server\|type\|source\|hash\|userid\|key'`|sed 's/[=:]/ /g'|awk '{print "http://fs"$7".trilulilu.ro/stream.php?type=video&source=site&hash="$5"&username="$3"&key=&format=mp4-360p"}'|sed 's/"//g'>/tmp/yt
+funny=`cat /tmp/yt`
+fi
+}
+ext=.mp4
+clear;echo -e $purpuriu www.220.ro "&" www.trilulilu.ro $verde
+wget -qO - http://st.220.t1.ro/rss/top|sed 's/<title>/\n/g;s/ /_/g;s/[<"?]/ /g'|grep href|awk '{print $1,$4,"www.220.ro"}'>/tmp/yt
+wget -qO - "http://www.trilulilu.ro/video-haioase?cele-mai-tari&azi"|grep '<span class="title"><a href='|sed 's/ /_/g;s/["><]/ /g'|awk '{print $5,$4,"www.trilulilu.ro"}'>>/tmp/yt
+cat /tmp/yt|awk '{print $1,$3}'|column -t|sed 's/_/ /g'|nl
 echo -e $purpuriu Selectati numarul filmului dorit sau $rosu"c"$purpuriu"autati" altul";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
 read nr
 if [[ "$nr" = *[[:digit:]]* ]];then
-nume=`wget -qO - http://www.220.ro/funny/top-saptamana-votate/|grep data-href|grep title|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'|sed -n "${nr}p"`.mp4
-adresa=`wget -qO -  http://www.220.ro/funny/top-saptamana-votate/|grep data-href|grep title|sed 's/ /_/g;s/"/ /g'|awk '{print $4}'|sed -n "${nr}p"`
-funny=`wget -qO - $adresa|grep source|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'`
+divertisment
 fi;
 if [[ "$nr" = "r" ]];then break 3;fi;
 if [[ "$nr" = "q" ]];then exit 0;fi;
 if [[ "$nr" = "c" ]];then
 read -p "Ce cautam? " titlu
-wget -qO - http://www.220.ro/cauta/$titlu|sed -n '/cauta utilizatori/,/search_b/ p'|grep href|grep th_160|sed 's/ /_/g;s/"/ /g'|awk '{print $4,$2}' >/tmp/caut
-cat /tmp/caut|awk '{print $1}'|nl
+wget -qO - http://www.220.ro/cauta/$titlu|sed -n '/cauta utilizatori/,/search_b/ p'|grep href|grep th_160|sed 's/ /_/g;s/"/ /g'|awk '{print $4,$2,"www.220.ro"}' >/tmp/yt
+wget -qO - http://cauta.trilulilu.ro/video/$titlu|grep '<span class="title"><a href='|sed 's/ /_/g;s/["><]/ /g'|awk '{print $5,$4,"www.trilulilu.ro"}'>>/tmp/yt
+cat /tmp/yt|awk '{print $1,$3}'|column -t|sed 's/_/ /g'|nl
 echo -e $purpuriu Selectati numarul filmului dorit sau $rosu"c"$purpuriu"autati" altul";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
-read nr1
+read nr
 if [[ "$nr1" = "r" ]];then break 3;fi;
 if [[ "$nr1" = "c" ]];then break;fi;
 if [[ "$nr1" = "q" ]];then exit 0;fi;
-nume=`cat /tmp/caut|awk '{print $1}'|sed -n "${nr1}p"`.mp4
-adresa1=`cat /tmp/caut|awk '{print $2}'|sed -n "${nr1}p"`
-funny=`wget -qO - $adresa1|grep source|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'`
+divertisment
 fi;
 OPTIUNE="Redati Descarcati Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]];then clear
 consola
+echo -e $verde"Redau..."$verdef$nume$esc$verde
 mplayer -cache 500 -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate  -osdlevel 3 "$funny" &>/dev/null;break
 elif [[ "$opt" = "Descarcati" ]];then clear
 echo -e "Descarc..." $verdef$nume$esc$verde
-wget -O $HOME/$nume --progress=dot $funny 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
+wget -O $HOME/$nume$ext --progress=dot $funny 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
 echo -ne "\b\b\b\b";break
 elif [[ "$opt" = "Reveniti" ]];then break 2;
 elif [[ "$opt" = "Parasiti" ]];then exit;
