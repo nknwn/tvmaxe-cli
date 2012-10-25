@@ -68,7 +68,7 @@ echo -e $verde
 ###############################################################
 if [[ "$noutate" = "c" ]]; then read -p "Ce film cautam? " titlu
 wget -qO - "http://www.990.ro/cauta2.php?text=$titlu&submit=Cauta"|sed -n '/content_wrapper/,/post_title/ p'|grep titlu|sed 's/ /_/g;s/[<>"]/ /g'|awk '{print $5,$3,"Gasit_pe:_www.990.ro"}'>/tmp/caut
-#wget -qO - http://cinemaxx.ro/search.php?keywords=$titlu|sed -n '/browse_results/,/laquo/ p'|grep 'href\|scr'|sed 's/ /_/g;s/"/ /g' >> /tmp/caut
+echo `wget -qO - http://cinemaxx.ro/search.php?keywords=$titlu|grep 'ro/film\|song_name'|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $2,$8}'|sed 's/artist_name//g'`>/tmp/yt;cat /tmp/yt|sed "s/http/\n http/"|awk '{print $2,$1,"Gasit_pe:_www.cinemaxx.ro"}'|sed '1d'>>/tmp/caut
 wget -qO - http://filmehd.net/?s=$titlu|sed -n '/search-movies/,/content / p'|grep jpg|sed 's/ /_/g;s/[";]/ /g;s/\&#8211//g;s/\&#039//g'|awk '{print $6,$4,"Gasit_pe:_filmehd.net"}'>>/tmp/caut
 >> /tmp/caut
 wget -qO - http://www.filmeonline.org/search/$titlu/|grep bookmark|sed 's/ /_/g;s/"/ /g'|awk '{print $8,$4,"Gasit_pe:_www.filmeonline.org"}'>>/tmp/caut
@@ -121,6 +121,11 @@ upload=`wget -qO - $adresa2|grep vk|sed 's/ /_/g;s/"/ /g;s/amp;//g'|awk '{print 
 descriere=`wget -qO - $adresa2|grep og:description|sed 's/ /_/g;s/"/ /g'|awk '{print $4}'|sed 's/_/ /g'`
 wget -qO - "$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/surse
 fi;
+if [[ "$sursa" = "www.cinemaxx.ro" ]];then
+upload=`wget -qO - $adresa2|grep vk|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'`
+wget -qO - "$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/surse
+descriere=`wget -qO - $adresa2|grep description|grep description|sed 's/ /_/g;s/"/ /g'|awk '{print $4}'|sed 's/_/ /g'`
+fi;
 if [[ "$sursa" = "www.filmeonline.org" ]];then
 upload=`wget -qO - $adresa2|grep VK|sed 's/ /_/g;s/"/ /g;s/?/ /g;s/\;/\&/g;s/\#038//g'|sed -n '1p'|awk '{print $3}'`
 wget -qO - "http://vk.com/video_ext.php?$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/surse
@@ -168,11 +173,11 @@ elif [[ "$opt" = "Reveniti" ]];then break 4;
 elif [[ "$opt" = "Inregistrati" ]]; then clear
 consola
 echo -e $verde"Inregistrez:" $verdef$nume...$esc
-$(wget -O $HOME/$nume$ext $film1 &>/dev/null &);echo -e $rosu"...redarea va incepe in 10 sec" $purpuriu; sleep 10 ; wait $(mplayer -cache 1000 -hardframedrop -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume$ext &>/dev/null); killall wget;
-clear;echo -e $verde"Ati vizionat: "$verdef$nume$esc;sleep 3;break
+$(wget -O $HOME/$nume$ext $film1 &>/dev/null &);echo -e $rosu"...redarea va incepe in 10 sec" $purpuriu; sleep 10 ; wait $(mplayer -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume$ext &>/dev/null); killall wget;
+clear;echo -e $verde"Ati vizionat: "$verdef$nume$esc;sleep 3;
 echo -e $cyan"Doriti sa pastrati inregistrarea"$verde" y/n"$cyan"?"
 read rec
-if  [[ "$rec" = "n" ]]; then rm $HOME/$nume$ext; exit 0;else break 4;fi;
+if  [[ "$rec" = "n" ]]; then rm $HOME/$nume$ext; break 4;else break 4;fi;
 elif [[ "$opt" = "Parasiti" ]]; then exit 0;
 else echo -e $rosu Ati ales gresit, mai incercati. $esc
 fi;done;done;done;fi
@@ -488,5 +493,6 @@ $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer -cache 500 -cach
 else
 mplayer -hardframedrop -cache 500 -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate $list $adr
 fi;fi;done;done
+
 
 
