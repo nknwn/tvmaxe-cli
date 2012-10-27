@@ -391,8 +391,8 @@ testt=`cat /tmp/yt|awk '{print $3}'|sed -n "${p}p"`
 if [[ "$testt" = "www.220.ro" ]];then
 funny=`wget -qO - $adresa|grep source|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'`;fi
 if [[ "$testt" = "www.trilulilu.ro" ]];then
-echo `wget -qO - "$adresa"|grep userid|sed 's/ /_/g;s/,/\n/g'|grep 'server\|type\|source\|hash\|userid\|key'`|sed 's/[=:]/ /g'|awk '{print "http://fs"$7".trilulilu.ro/stream.php?type=video&source=site&hash="$5"&username="$3"&key=&format=mp4-360p"}'|sed 's/"//g'>/tmp/yt
-funny=`cat /tmp/yt`
+echo `wget -qO - "$adresa"|grep userid|sed "s/ /_/g;s/,/\n /g"|grep 'server\|type\|source\|hash\|userid\|key'`>/tmp/caut
+funny=`cat /tmp/caut|sed 's/[=:]/ /g'|awk '{print "http://fs"$7".trilulilu.ro/stream.php?type=video&source=site&hash="$5"&username="$3"&key=&format=mp4-360p"}'|sed 's/"//g'`
 fi
 ext=.mp4
 }
@@ -404,6 +404,7 @@ echo -e $purpuriu Selectati numerele filmulmuletelor dorite sau redati $rosu"t"$
 echo -e $cyan"(Pentru a intrerupe bucla de redare dupa inchiderea mplayer tastati ctrl+z)"$esc
 read nr
 if [[ "$nr" = *[[:digit:]]* ]];then
+echo -e $verde
 OPTIUNE="Redati Descarcati Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]];then clear
@@ -447,6 +448,7 @@ if [[ "$nr" = "r" ]];then break 3;fi;
 if [[ "$nr" = "c" ]];then break;fi;
 if [[ "$nr" = "q" ]];then exit 0;fi;
 fi;
+echo -e $verde
 OPTIUNE="Redati Descarcati Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]];then clear
@@ -530,4 +532,5 @@ $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer -cache 500 -cach
 else
 mplayer -hardframedrop -cache 500 -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate $list $adr
 fi;fi;done;done
+
 
