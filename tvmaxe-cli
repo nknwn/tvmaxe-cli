@@ -48,8 +48,42 @@ while :;do
 clear
 echo -e $purpuriu Filme si seriale noi: www.990.ro$verde
 wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//'|nl|more -d
-echo -e $purpuriu Selectati numarul filmului dorit sau $rosu"c"$purpuriu"autati" altul";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$rosu
+echo -e $purpuriu"Selectati numarul filmului dorit sau "$rosu"c"$purpuriu"autati altul; " $rosu"n"$purpuriu"avigare, "$rosu"r"$purpuriu"eveniti; "$rosu "q"$purpuriu"uit"$rosu
 read noutate
+if [[ "$noutate" = "n" ]];then clear; echo -e $purpuriu"Filme dupa gen (990):"$verde
+wget -qO - http://www.990.ro|sed -n '/dupa gen/,/\/ul/ p'|sed '1,2d;$d'|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $7,"http://www.990.ro/"$4}'>/tmp/caut
+cat /tmp/caut|awk '{print $1}'|nl
+echo -e $purpuriu"Alegeti numarul genului dorit, "$rosu"c"$purpuriu"autati altul, "$rosu"r"$purpuriu"eveniti; "$rosu"q"$purpuriu"uit"$verde
+read gen
+if [[ "$gen" = "c" ]];then break ;fi;
+if [[ "$gen" = "r" ]];then break 3;fi;
+if [[ "$gen" = "q" ]];then exit; fi;
+if [[ "$gen" = *[[:digit:]]* ]];then clear
+genuri=`cat /tmp/caut|awk '{print $2}'|sed -n "${gen}p"`
+pagini=`wget -qO - $genuri|grep "Pagina -"|sed '$d'|sed 's/href/\n/g'|sed '1d'|wc -l`
+cumulpg=`echo $genuri|sed 's/-1.html//'`
+i=1
+for p in `seq 1 $pagini` ; do
+wget -qO - $cumulpg-$(( i++ )).html|sed -n '/post_meta/,/post_meta/ p'|grep title|sed 's/ /_/g;s/"/ /g'|awk '{print $9,"www.990.ro/"$3}'>>/tmp/tmp1
+echo paginez... $(( i++ ));
+done;clear
+cat /tmp/tmp1|awk '{print $1}'|nl|more -d;
+echo -e $purpuriu"Selectati numarul filmului dorit sau "$rosu"c"$purpuriu"autati altul; "$rosu"r"$purpuriu"eveniti; "$rosu "q"$purpuriu"uit"$rosu
+read filmgen
+if [[ "$filmgen" = "c" ]];then >/tmp/tmp1;break ;fi;
+if [[ "$filmgen" = "r" ]];then >/tmp/tmp1;break 3;fi;
+if [[ "$filmgen" = "q" ]];then >/tmp/tmp1;exit; fi;
+if [[ "$filmgen" = *[[:digit:]]* ]];then
+adresa=`cat /tmp/tmp1|awk '{print $2}'|sed -n "${filmgen}p"`
+server1=`wget -qO - $adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
+#server2=`wget -qO - $adresa|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
+upload=`wget -qO - $server1|grep fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'`
+#upload1=`wget -qO - $server2|grep 180upload|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'`
+nume=`cat /tmp/tmp1|awk '{print $1}'|sed -n "${filmgen}p"`
+descriere=`wget -qO - $adresa|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/ /g'`
+>/tmp/yt
+fi;fi;
+fi
 if [[ "$noutate" = "r" ]]; then break 3;fi;
 if [[ "$noutate" = "q" ]]; then exit 0;fi;
 ###############################################################
@@ -68,7 +102,7 @@ echo -e $verde
 ###############################################################
 if [[ "$noutate" = "c" ]]; then read -p "Ce film cautam? " titlu
 wget -qO - "http://www.990.ro/cauta2.php?text=$titlu&submit=Cauta"|sed -n '/content_wrapper/,/post_title/ p'|grep titlu|sed 's/ /_/g;s/[<>"]/ /g'|awk '{print $5,$3,"Gasit_pe:_www.990.ro"}'>/tmp/caut
-echo `wget -qO - http://cinemaxx.ro/search.php?keywords=$titlu|grep 'ro/film\|song_name'|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $2,$8}'|sed 's/artist_name//g'`|sed "s/http/\n http/g"|awk '{print $2,$1,"Gasit_pe:_www.cinemaxx.ro"}'|sed '1d'>>/tmp/caut
+echo `wget -qO - http://cinemaxx.rs/search.php?keywords=$titlu|grep 'rs/film\|song_name'|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $2,$8}'|sed 's/artist_name//g'`|sed "s/http/\n http/g"|awk '{print $2,$1,"Gasit_pe:_www.cinemaxx.rs"}'|sed '1d'>>/tmp/caut
 wget -qO - http://filmehd.net/?s=$titlu|sed -n '/search-movies/,/content / p'|grep jpg|sed 's/ /_/g;s/[";]/ /g;s/\&#8211//g;s/\&#039//g'|awk '{print $6,$4,"Gasit_pe:_filmehd.net"}'>>/tmp/caut
 >> /tmp/caut
 wget -qO - http://www.filmeonline.org/search/$titlu/|grep bookmark|sed 's/ /_/g;s/"/ /g'|awk '{print $8,$4,"Gasit_pe:_www.filmeonline.org"}'>>/tmp/caut
@@ -121,10 +155,10 @@ upload=`wget -qO - $adresa2|grep vk|sed 's/ /_/g;s/"/ /g;s/amp;//g'|awk '{print 
 descriere=`wget -qO - $adresa2|grep og:description|sed 's/ /_/g;s/"/ /g'|awk '{print $4}'|sed 's/_/ /g'`
 wget -qO - "$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/surse
 fi;
-if [[ "$sursa" = "www.cinemaxx.ro" ]];then
+if [[ "$sursa" = "www.cinemaxx.rs" ]];then
 upload=`wget -qO - $adresa2|grep vk|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'`
 wget -qO - "$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/surse
-descriere=`wget -qO - $adresa2|grep description|grep description|sed 's/ /_/g;s/"/ /g'|awk '{print $4}'|sed 's/_/ /g'`
+descriere=`wget -qO - $adresa2|sed -n '/Descriere/,/Taguri/ p'|sed 's/<[^>]*>/ /g'|sed '1d;$d'`
 fi;
 if [[ "$sursa" = "www.filmeonline.org" ]];then
 upload=`wget -qO - $adresa2|grep VK|sed 's/ /_/g;s/"/ /g;s/?/ /g;s/\;/\&/g;s/\#038//g'|sed -n '1p'|awk '{print $3}'`
@@ -400,8 +434,8 @@ clear;echo -e $purpuriu www.220.ro "&" www.trilulilu.ro $verde
 wget -qO - http://st.220.t1.ro/rss/top|sed 's/<title>/\n/g;s/ /_/g;s/[<"?]/ /g'|grep href|awk '{print $1,$4,"www.220.ro"}'>/tmp/yt
 wget -qO - "http://www.trilulilu.ro/video-haioase?cele-mai-tari&azi"|grep '<span class="title"><a href='|sed 's/ /_/g;s/["><]/ /g'|awk '{print $5,$4,"www.trilulilu.ro"}'>>/tmp/yt
 cat /tmp/yt|awk '{print $1,$3}'|column -t|sed 's/_/ /g'|nl
-echo -e $purpuriu Selectati numerele filmulmuletelor dorite sau redati $rosu"t"$purpuriu"oate, "$rosu"c"$purpuriu"autati" altultele";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
-echo -e $cyan"(Pentru a intrerupe bucla de redare dupa inchiderea mplayer tastati ctrl+z)"$esc
+echo -e $purpuriu Selectati numerele filmulmuletelor dorite sau redati $rosu"t"$purpuriu"oate, "$rosu"c"$purpuriu"autati" altele";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
+echo -e $cyan"(Pentru a intrerupe bucla de redare dupa inchiderea mplayer tastati ctrl+z)"$verde
 read nr
 if [[ "$nr" = *[[:digit:]]* ]];then
 echo -e $verde
@@ -531,6 +565,6 @@ if [[ "$soptest" = "sop" ]]; then
 $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $(mplayer -cache 500 -cache-min 20 -msglevel all=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate http://localhost:9901 &>/dev/null); killall sp-sc
 else
 mplayer -hardframedrop -cache 500 -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate $list $adr
+# 2>&1 |sed -n -u -e '/Name/,/ICY/ p'
 fi;fi;done;done
-
 
