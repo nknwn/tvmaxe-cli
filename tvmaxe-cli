@@ -207,7 +207,7 @@ elif [[ "$opt" = "Reveniti" ]];then break 4;
 elif [[ "$opt" = "Inregistrati" ]]; then clear
 consola
 echo -e $verde"Inregistrez:" $verdef$nume...$esc
-$(wget -O $HOME/$nume$ext $film1 &>/dev/null &);echo -e $rosu"...redarea va incepe in 10 sec" $purpuriu; sleep 10 ; wait $(mplayer -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume$ext &>/dev/null); killall wget;
+$(wget -O $HOME/$nume$ext $film1 &>/dev/null &);echo -e $rosu"...redarea va incepe in 10 sec" $purpuriu; sleep 10 ; wait $(mplayer -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry $coordonate  -osdlevel 2 $HOME/$nume$ext); killall wget;
 clear;echo -e $verde"Ati vizionat: "$verdef$nume$esc;sleep 3;
 echo -e $cyan"Doriti sa pastrati inregistrarea"$verde" y/n"$cyan"?"
 read rec
@@ -218,91 +218,6 @@ fi;done;done;done;fi
 #########################################################
 if [[ "$sur" = "youtube" ]];then
 i=1
-while :;do
-while :;do
-clear
-echo -e $purpuriu"Introduceti numele piesei dorite sau redati o" $rosu"l"$purpuriu"ista" existenta, $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$rosu
-read titlu
-youtube1(){
-cat $HOME/.tvmaxe-cli/playlist/$lista|awk '{print $2}'|sed 's/_/ /g'|nl
-adresa=`cat $HOME/.tvmaxe-cli/playlist/$fisier|sed -n "${p}p"`
-nume=`wget -qO - "$adresa"|grep eow-title|sed 's/ /_/g;s/"/ /g'|awk '{print $8}'`
-wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http > /tmp/yt
-piesa=`cat /tmp/yt`
-}
-if [[ "$titlu" = "r" ]];then break 3;fi;
-if [[ "$titlu" = "q" ]];then exit 0;fi;
-if [[ "$titlu" = "l" ]];then clear
-echo -e $purpuriu"Liste existente:"$verde
-ls $HOME/.tvmaxe-cli/playlist/|nl
-echo -e $purpuriu"Alegeti lista pentru redare:"$verde
-echo -e $cyan"(Pentru a intrerupe bucla de redare, dupa inchiderea mplayer tastati ctrl+z)"$verde
-read pl;clear
-lista=`ls $HOME/.tvmaxe-cli/playlist/|sed -n "${pl}p"`
-echo -e $verdef $lista $esc $verde
-fisier=`ls $HOME/.tvmaxe-cli/playlist/|sed -n "${pl}p"`
-piesepl=`cat $HOME/.tvmaxe-cli/playlist/$fisier|wc -l`
-OPTIUNE="Redati Redati_audio Descarcati_lista Conversie_mp3 Stergeti_lista Reveniti Parasiti"
-select opt in $OPTIUNE; do
-if [[ "$opt" = "Redati" ]];then clear
-consola
-for p in `seq 1 $piesepl` ; do
-echo -e $verdef $lista $esc $verde
-youtube1
-echo -e Redau $verdef $(( i++ )). $nume...$esc $verde
-mplayer -cache 500 -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate -osdlevel 3 $piesa &>/dev/null
-clear;done; break;
-elif [[ "$opt" = "Redati_audio" ]];then clear
-for p in `seq 1 $piesepl` ; do
-youtube1
-echo -e Redau $verdef  $(( i++ )). $nume...$esc $verde
-mplayer -cache 500 -ao alsa -novideo $piesa &>/dev/null
-clear;done; break;
-elif [[ "$opt" = "Descarcati_lista" ]]; then clear
-for p in `seq 1 $piesepl` ; do
-youtube1
-echo -e Descarc $verdef  $(( i++ )). $nume...$esc $verde
-wget -O $HOME/$nume.flv --progress=dot $piesa 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
-echo -ne "\b\b\b\b"
-clear;done; break;
-elif [[ "$opt" = "Conversie_mp3" ]];then clear
-for p in `seq 1 $piesepl` ; do
-youtube1
-echo -e Conversie $verdef  $(( i++ )). $nume...$esc $verde
-echo
-echo -e $verdef"Descarc... fisierul flv"$esc$rosu
-wget -O /tmp/$nume.flv --progress=dot $piesa 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
-echo -ne "\b\b\b\b"
-echo
-echo -e $verdef"Conversie... flv>wav"$esc$rosu
-sleep 1
-mplayer -novideo -nocorrect-pts -ao pcm:waveheader /tmp/$nume.flv &>/dev/null
-echo
-echo -e $verdef"Conversie... wav>mp3"$esc$rosu
-lame -h -b 192 audiodump.wav $HOME/$nume.mp3
-sleep 1
-echo -e $verdef"Sterg fisierele flv si wav"$esc$verde
-rm $HOME/audiodump.wav /tmp/$nume.flv
-clear;done;break
-elif [[ "$opt" = "Stergeti_lista" ]]; then rm $HOME/.tvmaxe-cli/playlist/$fisier
-break
-elif [[ "$opt" = "Reveniti" ]];then break 2;
-elif [[ "$opt" = "Parasiti" ]]; then exit;
-else echo -e $rosu"Ati ales gresit, mai incercati." $esc
-fi;done;fi;
-pagini=`wget -qO -  http://www.youtube.com/results?search_query="$titlu"|grep data-page|wc -l`
-> /tmp/yt
-for a in `seq 1 $pagini` ; do
-wget -qO - "http://www.youtube.com/results?search_query='$titlu'&page=$a"|grep item-title|grep video|sed 's/ /_/g;s/"/ /g'|sed 's/\&amp;quot;//g'|awk '{print $4,"http://www.youtube.com/watch?v="$12,$10,$8}' >> /tmp/yt
-done
-echo -e $verde
-cat /tmp/yt|awk '{print $1}'|nl|column -t|sed 's/_/ /g;s/\&lt;b&gt;//g'|sed 's/\#39//g'|sed 's/&amp//'|more -d
-echo -e $purpuriu"Selectati numarul pieselor dorite pentru redare, redati $rosu"t"$purpuriu"oate "("$rosu"au"$purpuriu"dio) "$rosu"c"$purpuriu"autati" altele";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
-echo -e $cyan"(Pentru a intrerupe bucla de redare, dupa inchiderea mplayer tastati ctrl+z)"$verde
-read nr
-if [[ "$nr" = "r" ]];then break 3;fi;
-if [[ "$nr" = "c" ]];then break;fi;
-if [[ "$nr" = "q" ]];then exit 0;fi;
 youtube(){
 adresa=`cat /tmp/yt|awk '{print $2}'|sed -n "${p}p"`
 wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http >> /tmp/yt
@@ -312,6 +227,20 @@ nume1=`cat /tmp/yt|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
 nume=`cat /tmp/yt|awk '{print $1}'|sed -n "${p}p"`
 testpiesa=`wget --spider $piesa -qO - &>/dev/null 2>&1`
 }
+youtube1(){
+cat $HOME/.tvmaxe-cli/playlist/$lista|awk '{print $2}'|sed 's/_/ /g'|nl
+adresa=`cat $HOME/.tvmaxe-cli/playlist/$fisier|sed -n "${p}p"`
+nume=`wget -qO - "$adresa"|grep eow-title|sed 's/ /_/g;s/"/ /g'|awk '{print $8}'`
+wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http > /tmp/yt
+piesa=`cat /tmp/yt`
+}
+selectie(){
+echo -e $purpuriu"Selectati numarul pieselor dorite pentru redare, redati $rosu"t"$purpuriu"oate "("$rosu"au"$purpuriu"dio) "$rosu"c"$purpuriu"autati" altele";" $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$verde
+echo -e $cyan"(Pentru a intrerupe bucla de redare, dupa inchiderea mplayer tastati ctrl+z)"$verde
+read nr
+if [[ "$nr" = "r" ]];then break 3;fi;
+if [[ "$nr" = "c" ]];then break;fi;
+if [[ "$nr" = "q" ]];then exit 0;fi;
 if [[ "$nr" = "t" ]];then
 piesepl=`cat /tmp/yt|wc -l`
 consola
@@ -340,7 +269,6 @@ else
 echo -e $verde"Redau: "$verdef $nume1... $esc $verde
 mplayer -cache 500 -ao alsa -novideo $piesa &>/dev/null
 fi;done;break;fi;
-
 echo
 OPTIUNE="Redati Redati_audio Descarcati Conversie_mp3 Playlist Reveniti Parasiti"
 select opt in $OPTIUNE;do
@@ -413,7 +341,91 @@ elif [[ "$opt" = "Reveniti" ]];then break 2;
 elif [[ "$opt" = "Parasiti" ]];then exit;
 else echo -e $rosu"Ati ales gresit, mai incercati."$esc
 fi;done;
-done;done;fi;
+}
+while :;do
+while :;do
+clear
+echo -e $purpuriu"Categorii youtube:"$verde
+wget -qO - http://www.youtube.com/videos?feature=mh|grep '"" href'|sed 's/ /_/g;s/["/]/ /g;s/videos?c=17/sports/'|awk '{print $3}'|nl
+echo -e $purpuriu"Selectati o categorie; cautati piesa dorita sau redati o" $rosu"l"$purpuriu"ista" existenta, $rosu"r"$purpuriu"eveniti"";"$rosu "q"$purpuriu"uit"$rosu
+read titlu
+if [[ "$titlu" = "r" ]];then break 3;fi;
+if [[ "$titlu" = "q" ]];then exit 0;fi;
+if [[ "$titlu" = *[[:digit:]]* ]];then
+categorie=`wget -qO - http://www.youtube.com/videos?feature=mh|grep '"" href'|sed 's/ /_/g;s/["/]/ /g'|awk '{print $3}'|sed -n "${titlu}p"`
+echo -e $purpuriu$Categorie$verde
+wget -qO - http://www.youtube.com/$categorie|grep watch?v|grep title|sed 's/ /_/g;s/["&]/ /g'|awk '{print $5,"http://www.youtube.com"$2}'>/tmp/yt
+cat /tmp/yt|awk '{print $1}'|sed 's/_/ /g'|nl|more -d
+selectie
+break
+fi;
+if [[ "$titlu" = "l" ]];then clear
+echo -e $purpuriu"Liste existente:"$verde
+ls $HOME/.tvmaxe-cli/playlist/|nl
+echo -e $purpuriu"Alegeti lista pentru redare:"$verde
+echo -e $cyan"(Pentru a intrerupe bucla de redare, dupa inchiderea mplayer tastati ctrl+z)"$verde
+read pl;clear
+lista=`ls $HOME/.tvmaxe-cli/playlist/|sed -n "${pl}p"`
+echo -e $verdef $lista $esc $verde
+fisier=`ls $HOME/.tvmaxe-cli/playlist/|sed -n "${pl}p"`
+piesepl=`cat $HOME/.tvmaxe-cli/playlist/$fisier|wc -l`
+OPTIUNE="Redati Redati_audio Descarcati_lista Conversie_mp3 Stergeti_lista Reveniti Parasiti"
+select opt in $OPTIUNE; do
+if [[ "$opt" = "Redati" ]];then clear
+consola
+for p in `seq 1 $piesepl` ; do
+echo -e $verdef $lista $esc $verde
+youtube1
+echo -e Redau $verdef $(( i++ )). $nume...$esc $verde
+mplayer -cache 500 -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate -osdlevel 3 $piesa &>/dev/null
+clear;done; break;
+elif [[ "$opt" = "Redati_audio" ]];then clear
+for p in `seq 1 $piesepl` ; do
+youtube1
+echo -e Redau $verdef  $(( i++ )). $nume...$esc $verde
+mplayer -cache 500 -ao alsa -novideo $piesa &>/dev/null
+clear;done; break;
+elif [[ "$opt" = "Descarcati_lista" ]]; then clear
+for p in `seq 1 $piesepl` ; do
+youtube1
+echo -e Descarc $verdef  $(( i++ )). $nume...$esc $verde
+wget -O $HOME/$nume.flv --progress=dot $piesa 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
+echo -ne "\b\b\b\b"
+clear;done; break;
+elif [[ "$opt" = "Conversie_mp3" ]];then clear
+for p in `seq 1 $piesepl` ; do
+youtube1
+echo -e Conversie $verdef  $(( i++ )). $nume...$esc $verde
+echo
+echo -e $verdef"Descarc... fisierul flv"$esc$rosu
+wget -O /tmp/$nume.flv --progress=dot $piesa 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
+echo -ne "\b\b\b\b"
+echo
+echo -e $verdef"Conversie... flv>wav"$esc$rosu
+sleep 1
+mplayer -novideo -nocorrect-pts -ao pcm:waveheader /tmp/$nume.flv &>/dev/null
+echo
+echo -e $verdef"Conversie... wav>mp3"$esc$rosu
+lame -h -b 192 audiodump.wav $HOME/$nume.mp3
+sleep 1
+echo -e $verdef"Sterg fisierele flv si wav"$esc$verde
+rm $HOME/audiodump.wav /tmp/$nume.flv
+clear;done;break
+elif [[ "$opt" = "Stergeti_lista" ]]; then rm $HOME/.tvmaxe-cli/playlist/$fisier
+break
+elif [[ "$opt" = "Reveniti" ]];then break 2;
+elif [[ "$opt" = "Parasiti" ]]; then exit;
+else echo -e $rosu"Ati ales gresit, mai incercati." $esc
+fi;done;fi;
+pagini=`wget -qO -  http://www.youtube.com/results?search_query="$titlu"|grep data-page|wc -l`
+> /tmp/yt
+for a in `seq 1 $pagini` ; do
+wget -qO - "http://www.youtube.com/results?search_query='$titlu'&page=$a"|grep item-title|grep video|sed 's/ /_/g;s/"/ /g'|sed 's/\&amp;quot;//g'|awk '{print $4,"http://www.youtube.com/watch?v="$12,$10,$8}' >> /tmp/yt
+done
+echo -e $verde
+cat /tmp/yt|awk '{print $1}'|nl|column -t|sed 's/_/ /g;s/\&lt;b&gt;//g'|sed 's/\#39//g'|sed 's/&amp//'|more -d
+selectie
+done;done;fi
 #########################################################
 if [[ "$sur" = "divertisment" ]];then
 while :;do
@@ -567,4 +579,3 @@ else
 mplayer -hardframedrop -cache 500 -cache-min 20 -msglevel cache=-1 -prefer-ipv4 -msgcolor -nolirc -ao alsa -vo xv,fbdev2, -xy $marime -zoom -geometry  $coordonate $list $adr
 # 2>&1 |sed -n -u -e '/Name/,/ICY/ p'
 fi;fi;done;done
-
