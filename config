@@ -1,3 +1,4 @@
+
 #Fisier de configurare tvmaxe-cli:
 #culori:
 negru='\E[1;30m' rosu='\e[1;31m' verde='\e[1;32m' verdef='\e[0;30;42m' galben='\e[1;33m' albastru='\e[1;34m' purpuriu='\e[1;35m' cyan='\e[1;36m' alb='\e[1;37m' esc='\e[0m'
@@ -8,7 +9,7 @@ atentie=$rosu
 posturi=$verde
 fundal=$verdef
 ##################################################
-#afisare fereastra mplayer:
+#afisare fereastra mplayer in tty:
 marime=360
 coordonate=10:20
 aspect=16:9

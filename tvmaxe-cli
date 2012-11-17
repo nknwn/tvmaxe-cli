@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+if [ ! -f $HOME/.tvmaxe-cli/config ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/config > $HOME/.tvmaxe-cli/config 
+fi;
 source $HOME/.tvmaxe-cli/config
 while :;do
 while :;do
@@ -8,17 +10,8 @@ echo  "  | |   )\_/( |  _  | /( )\  ) | ( | _) ";echo  "  )_(    \_/  )_( )_()_/
 testconnection=`wget --tries=3 --timeout=15 www.google.com -qO - &>/dev/null 2>&1`
 if [ $? != 0 ]; then for i in `seq 1 2`;do 
 clear;sleep 1;echo -e $atentie "! Verificati conexiunea la internet !"$esc;sleep 1;done; exit 1;fi;
-consola(){
-consola=`echo $DISPLAY'a'`
-if [[ "$consola" = "a" ]]; then
-echo -e $meniu1"Introduceti marimea ferestrei si coordonatele de redare"$atentie "(ex. 360 10:10 16:9)" $posturi
-read marime coordonate aspect
-fi
-}
-mkdir -p $HOME/'.'tvmaxe-cli
+if [ ! -d $HOME/'.'tvmaxe-cli ];then mkdir -p $HOME/'.'tvmaxe-cli;fi;
 if [ ! -f $HOME/.tvmaxe-cli/subscrieri ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.tvmaxe-cli/subscrieri;fi
-if [ ! -f $HOME/.tvmaxe-cli/config ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/config > $HOME/.tvmaxe-cli/config 
-fi;
 if [ ! -f $HOME/.tvmaxe-cli/.commit_tv ];then  wget -qO - https://github.com/nknwn/tvmaxe-cli/commits/master|grep sha|sed -n '1p'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $3}' > $HOME/.tvmaxe-cli/.commit_tv; fi;
 if [ -f $HOME/.tvmaxe-cli/.commit_tv ]; then
 commit1=` wget -qO - https://github.com/nknwn/tvmaxe-cli/commits/master|grep sha|sed -n '1p'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $3}'`
@@ -133,7 +126,7 @@ selectie=`echo $adresa2|sed 's/-/ /g'|awk '{print $1}'`
 if [[ "$selectie" = "filme" ]]; then
 server1=`wget -qO - http://www.990.ro/$adresa2|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 #server2=`wget -qO - http://www.990.ro/$adresa2|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
-descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed "s/<[^>]*>/ /g;s/:/\n/"`
+escriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed "s/<[^>]*>/ /g;s/:/\n/"`
 fi
 #################################################################
 if [[ "$selectie" = "seriale" ]]; then
@@ -200,7 +193,6 @@ echo -e $meniu1
 OPTIUNE="Redati Descarcati Inregistrati Cautati Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]]; then clear
-consola
 echo -e $posturi"Redau:" $fundal$nume...$esc
 $player $film1 &>/dev/null
 clear;echo -e $posturi"Ati vizionat: "$fundal$nume$esc;sleep 3;break
@@ -209,7 +201,6 @@ echo -ne "\b\b\b\b";break
 elif [[ "$opt" = "Cautati" ]];then clear; break;
 elif [[ "$opt" = "Reveniti" ]];then break 4;
 elif [[ "$opt" = "Inregistrati" ]]; then clear
-consola
 echo -e $posturi"Inregistrez:" $fundal$nume...$esc
 $(wget -O $salvare/$nume$ext $film1 &>/dev/null &);echo -e $atentie"...redarea va incepe in 10 sec" $meniu1; sleep 10 ; wait $($player $salvare/$nume$ext); killall wget;
 clear;echo -e $posturi"Ati vizionat: "$fundal$nume$esc;sleep 3;
@@ -247,7 +238,6 @@ if [[ "$nr" = "c" ]];then break;fi;
 if [[ "$nr" = "q" ]];then exit 0;fi;
 if [[ "$nr" = "t" ]];then
 piesepl=`cat /tmp/yt|wc -l`
-consola
 echo $piesepl
 for p in `seq 1 $piesepl` ; do
 youtube
@@ -257,7 +247,6 @@ $player $piesa &>/dev/null
 done;break;fi;
 if [[ "$nr" = "au" ]];then
 piesepl=`cat /tmp/yt|wc -l`
-consola
 echo $piesepl
 for p in `seq 1 $piesepl` ; do
 youtube
@@ -266,14 +255,9 @@ echo -e $posturi"Redau: "$fundal $nume1... $esc $posturi
 $player --novideo $piesa &>/dev/null
 done;break;fi;
 echo
-testpiesa=`wget --spider $piesa -qO - &>/dev/null 2>&1`
-if [ $? != 0 ]; then for i in `seq 1 2`;do 
-clear;sleep 1;echo -e $atentie"! Se pare ca fisierul nu mai exista sau necesita autentificare!"$posturi;sleep 1;done;
-else
 OPTIUNE="Redati Redati_audio Descarcati Conversie_mp3 Playlist Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]];then
-consola
 clear
 for p in $nr ; do
 youtube
@@ -325,7 +309,6 @@ elif [[ "$opt" = "Reveniti" ]];then break 2;
 elif [[ "$opt" = "Parasiti" ]];then exit;
 else echo -e $atentie"Ati ales gresit, mai incercati."$esc
 fi;done;
-fi;
 }
 while :;do
 while :;do
@@ -357,7 +340,6 @@ piesepl=`cat $HOME/.tvmaxe-cli/playlist/$fisier|wc -l`
 OPTIUNE="Redati Redati_audio Descarcati_lista Conversie_mp3 Stergeti_lista Reveniti Parasiti"
 select opt in $OPTIUNE; do
 if [[ "$opt" = "Redati" ]];then clear
-consola
 for p in `seq 1 $piesepl` ; do
 echo -e $fundal $lista $esc $posturi
 youtube1
@@ -439,7 +421,6 @@ echo -e $posturi
 OPTIUNE="Redati Descarcati Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]];then clear
-consola
 for p in $nr ; do
 divertisment
 echo -e $posturi"Redau..."$fundal$nume$esc$posturi
@@ -460,7 +441,6 @@ if [[ "$nr" = "r" ]];then break 3;fi;
 if [[ "$nr" = "q" ]];then exit 0;fi;
 if [[ "$nr" = "t" ]];then
 piesepl=`cat /tmp/yt|wc -l`
-consola
 echo $piesepl
 for p in `seq 1 $piesepl` ; do
 divertisment
@@ -483,7 +463,6 @@ echo -e $posturi
 OPTIUNE="Redati Descarcati Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]];then clear
-consola
 for p in $nr ; do
 divertisment
 echo -e $posturi"Redau..."$fundal$nume$esc$posturi
@@ -509,9 +488,6 @@ wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk 
 else
 wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/â/a/g;s/ă/a/g;s/ț/t/g;s/ș/s/g;s/î/i/g'|more -d
 fi;
-echo -e $atentie "Introduceti marimea ferestrei de redare si coordonatele acesteia (ex. 360 10:10 16:9) "
-echo -e $atentie "in caz ca acesta nu are video, tastati "Enter""
-read marime coordonate aspect
 else
 if [[ "$sur" = "cooltv" ]];then
 wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4}'|sed 's/^...//;$d;s/-/_/g'|nl|column -c 30|column -t|more -d
@@ -560,6 +536,6 @@ echo -e $verde"procesez..."
 if [[ "$soptest" = "sop" ]]; then 
 $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $($player http://localhost:9901 &>/dev/null); killall sp-sc
 else
-$player $list $adr
+$player $list $adr &>/dev/null
 fi;fi;done;done
 
