@@ -17,7 +17,8 @@ fi
 }
 mkdir -p $HOME/'.'tvmaxe-cli
 if [ ! -f $HOME/.tvmaxe-cli/subscrieri ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.tvmaxe-cli/subscrieri;fi
-if [ ! -f $HOME/.tvmaxe-cli/config ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/config > $HOME/.tvmaxe-cli/config fi;
+if [ ! -f $HOME/.tvmaxe-cli/config ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/config > $HOME/.tvmaxe-cli/config 
+fi;
 if [ ! -f $HOME/.tvmaxe-cli/.commit_tv ];then  wget -qO - https://github.com/nknwn/tvmaxe-cli/commits/master|grep sha|sed -n '1p'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $3}' > $HOME/.tvmaxe-cli/.commit_tv; fi;
 if [ -f $HOME/.tvmaxe-cli/.commit_tv ]; then
 commit1=` wget -qO - https://github.com/nknwn/tvmaxe-cli/commits/master|grep sha|sed -n '1p'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $3}'`
@@ -27,7 +28,8 @@ if [[ "$commit1" != "$commit2" ]]; then
  wget -qO - https://github.com/nknwn/tvmaxe-cli/commits/master|grep sha|sed -n '1p'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $3}' > $HOME/.tvmaxe-cli/.commit_tv
 echo -e $atentie"Actualizare: "$meniu2 http://nknwn.github.com/tvmaxe-cli/ $atentie
 echo -e Pentru a actuaiza doar tvmaxe-cli alegeti '"a"', pentru a actualiza si subscrierile alegeti '"as"', pentru a actualiza fisierul de configurare alegeti '"conf"'
-echo -e Atentie! actualizarea '"as"' presupune suprascrierea fisierului '"subscrieri"'$meniu2;wget -qO - http://pastebin.com/raw.php?i=zadMXuWU;echo -e $verde
+echo -e Atentie! actualizarea '"as"' presupune suprascrierea fisierului '"subscrieri"'$meniu2;
+wget -qO - http://pastebin.com/raw.php?i=zadMXuWU;echo -e $verde
 fi;fi;
 cat $HOME/.tvmaxe-cli/subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t|more -d
 echo -e $cyan"Alegeti numarul subscrierii dorite: sau parasiti " $atentie"q"$meniu2"uit; "$atentie"c"$meniu2"onfigurare"$atentie
@@ -38,9 +40,12 @@ su -c 'wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli > /u
 if [[ "$sursa" = "as" ]];then
 wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.subscrieri
 su -c 'wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/tvmaxe-cli > /usr/bin/tvmaxe-cli';exit 0;fi;
-if [[ "$sursa" = "conf" ]]; then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/config > $HOME/.tvmaxe-cli/config;exit 0;fi;
+if [[ "$sursa" = "conf" ]]; then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/config > $HOME/.tvmaxe-cli/config
+exit 0;fi;
 sur=`cat $HOME/.tvmaxe-cli/subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $2}'|sed -n "${sursa}p"`
-if [[ "$sursa" = "c" ]]; then nano $HOME/.tvmaxe-cli/config||vi $HOME/.tvmaxe-cli/config;exit;fi
+if [[ "$sursa" = "c" ]]; then 
+nano $HOME/.tvmaxe-cli/config||vi $HOME/.tvmaxe-cli/config
+exit 0;fi;
 if [[ "$sur" = "filme" ]];then
 while :;do
 while :;do
