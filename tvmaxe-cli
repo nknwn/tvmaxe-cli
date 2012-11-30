@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#player='omxplayer -o hdmi'
 if [ ! -f $HOME/.tvmaxe-cli/config ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/config > $HOME/.tvmaxe-cli/config 
 fi;
 source $HOME/.tvmaxe-cli/config
@@ -86,8 +87,8 @@ if [[ "$filmgen" = "r" ]];then >/tmp/tmp1;break 3;fi;
 if [[ "$filmgen" = "q" ]];then >/tmp/tmp1;echo -e $esc;exit; fi;
 if [[ "$filmgen" = *[[:digit:]]* ]];then
 adresa=`cat /tmp/tmp1|awk '{print $2}'|sed -n "${filmgen}p"`
-server1=`wget -qO - $adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
-#server2=`wget -qO - $adresa|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
+server1=`wget -qO - $adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
+#server2=`wget -qO - $adresa|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
 upload=`wget -qO - $server1|grep fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'`
 #upload1=`wget -qO - $server2|grep 180upload|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'`
 nume=`cat /tmp/tmp1|awk '{print $1}'|sed -n "${filmgen}p"`
@@ -100,8 +101,8 @@ if [[ "$noutate" = "q" ]]; then echo -e $esc;exit 0;fi;
 ###############################################################
 if [[ "$noutate" = *[[:digit:]]* ]];then
 adresa=`wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'|sed -n "${noutate}p"`
-server1=`wget -qO - http://www.990.ro/$adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
-#server2=`wget -qO - http://www.990.ro/$adresa|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
+server1=`wget -qO - http://www.990.ro/$adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
+#server2=`wget -qO - http://www.990.ro/$adresa|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
 nume=`wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//;s/ /_/g'|sed -n "${noutate}p"`
 descriere=`wget -qO - http://www.990.ro/$adresa|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/ /g'`
 #################################################################
@@ -138,8 +139,8 @@ nume=`cat /tmp/caut|awk '{print $1}'|sed -n "${numar}p"`
 if [[ "$sursa" = "www.990.ro" ]];then
 selectie=`echo $adresa2|sed 's/-/ /g'|awk '{print $1}'`
 if [[ "$selectie" = "filme" ]]; then
-server1=`wget -qO - http://www.990.ro/$adresa2|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
-#server2=`wget -qO - http://www.990.ro/$adresa2|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
+server1=`wget -qO - http://www.990.ro/$adresa2|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2}`
+#server2=`wget -qO - http://www.990.ro/$adresa2|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
 escriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed "s/<[^>]*>/ /g;s/:/\n/"`
 fi
 #################################################################
@@ -522,5 +523,6 @@ $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $($player http://localhost
 else
 $player $list $adr &>/dev/null
 fi;done;echo -e $esc;done
+
 
 
