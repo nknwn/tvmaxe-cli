@@ -62,7 +62,7 @@ echo -e $meniu1 Filme si seriale noi: www.990.ro$posturi
 wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//'|nl|sed '$d'|sed '$d'|more -d
 echo -e $meniu1"Selectati numarul filmului dorit sau "$atentie"c"$meniu1"autati altul; " $atentie"n"$meniu1"avigare, "$atentie"r"$meniu1"eveniti; "$atentie "q"$meniu1"uit"$atentie
 read noutate
-if [[ "$noutate" = "n" ]];then clear; echo -e $meniu1"Filme dupa gen (990):"$atentie
+if [[ "$noutate" = "n" ]];then clear; echo -e $meniu1"Filme dupa gen (990):"$posturi
 wget -qO - http://www.990.ro|sed -n '/dupa gen/,/\/ul/ p'|sed '1,2d;$d'|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $7,"http://www.990.ro/"$4}'>/tmp/caut
 cat /tmp/caut|awk '{print $1}'|nl
 echo -e $meniu1"Alegeti numarul genului dorit, "$atentie"c"$meniu1"autati altul, "$atentie"r"$meniu1"eveniti; "$atentie"q"$meniu1"uit"$posturi
@@ -87,7 +87,7 @@ if [[ "$filmgen" = "r" ]];then >/tmp/tmp1;break 3;fi;
 if [[ "$filmgen" = "q" ]];then >/tmp/tmp1;echo -e $esc;exit; fi;
 if [[ "$filmgen" = *[[:digit:]]* ]];then
 adresa=`cat /tmp/tmp1|awk '{print $2}'|sed -n "${filmgen}p"`
-server1=`wget -qO - $adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
+server1=`wget -qO - $adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 #server2=`wget -qO - $adresa|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
 upload=`wget -qO - $server1|grep fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'`
 #upload1=`wget -qO - $server2|grep 180upload|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'`
@@ -101,7 +101,7 @@ if [[ "$noutate" = "q" ]]; then echo -e $esc;exit 0;fi;
 ###############################################################
 if [[ "$noutate" = *[[:digit:]]* ]];then
 adresa=`wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'|sed -n "${noutate}p"`
-server1=`wget -qO - http://www.990.ro/$adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
+server1=`wget -qO - http://www.990.ro/$adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 #server2=`wget -qO - http://www.990.ro/$adresa|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
 nume=`wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//;s/ /_/g'|sed -n "${noutate}p"`
 descriere=`wget -qO - http://www.990.ro/$adresa|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/ /g'`
@@ -139,9 +139,9 @@ nume=`cat /tmp/caut|awk '{print $1}'|sed -n "${numar}p"`
 if [[ "$sursa" = "www.990.ro" ]];then
 selectie=`echo $adresa2|sed 's/-/ /g'|awk '{print $1}'`
 if [[ "$selectie" = "filme" ]]; then
-server1=`wget -qO - http://www.990.ro/$adresa2|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2}`
+server1=`wget -qO - http://www.990.ro/$adresa2|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3}'`
 #server2=`wget -qO - http://www.990.ro/$adresa2|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
-escriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed "s/<[^>]*>/ /g;s/:/\n/"`
+descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed "s/<[^>]*>/ /g;s/:/\n/"`
 fi
 #################################################################
 if [[ "$selectie" = "seriale" ]]; then
