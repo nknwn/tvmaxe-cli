@@ -74,12 +74,12 @@ if [[ "$gen" = *[[:digit:]]* ]];then clear
 genuri=`cat /tmp/caut|awk '{print $2}'|sed -n "${gen}p"`
 pagini=`wget -qO - $genuri|grep "Pagina -"|sed '$d'|sed 's/href/\n/g'|sed '1d'|wc -l`
 cumulpg=`echo $genuri|sed 's/-1.html//'`
-i=1
+i=1;> /tmp/tmp1
 for p in `seq 1 $pagini` ; do
 wget -qO - $cumulpg-$(( i++ )).html|sed -n '/post_meta/,/post_meta/ p'|grep title|sed 's/ /_/g;s/"/ /g'|awk '{print $9,"www.990.ro/"$3}'>>/tmp/tmp1
 echo paginez... $(( i++ ));
 done;clear
-cat /tmp/tmp1|awk '{print $1}'|nl|more -d;
+cat /tmp/tmp1|awk '{print $1}'|sed 's/_/ /g'|nl|more -d;
 echo -e $meniu1"Selectati numarul filmului dorit sau "$atentie"c"$meniu1"autati altul; "$atentie"r"$meniu1"eveniti; "$atentie "q"$meniu1"uit"$atentie
 read filmgen
 if [[ "$filmgen" = "c" ]];then >/tmp/tmp1;break ;fi;
@@ -310,20 +310,10 @@ fi;done;
 while :;do
 while :;do
 clear
-echo -e $meniu1"Categorii youtube:"$posturi
-wget -qO - http://www.youtube.com/videos?feature=mh|grep '"" href'|sed 's/ /_/g;s/["/]/ /g;s/videos?c=17/sports/'|awk '{print $3}'|nl
-echo -e $meniu1"Selectati o categorie; cautati piesa dorita sau redati o" $atentie"l"$meniu1"ista" existenta, $atentie"r"$meniu1"eveniti"";"$atentie "q"$meniu1"uit"$atentie
+echo -e $meniu1"Cautati piesa dorita sau redati o" $atentie"l"$meniu1"ista" existenta, $atentie"r"$meniu1"eveniti"";"$atentie "q"$meniu1"uit"$atentie
 read titlu
 if [[ "$titlu" = "r" ]];then break 3;fi;
 if [[ "$titlu" = "q" ]];then echo -e $esc;exit 0;fi;
-if [[ "$titlu" = *[[:digit:]]* ]];then
-categorie=`wget -qO - http://www.youtube.com/videos?feature=mh|grep '"" href'|sed 's/ /_/g;s/["/]/ /g'|awk '{print $3}'|sed -n "${titlu}p"`
-echo -e $meniu1$categorie$posturi
-wget -qO - http://www.youtube.com/$categorie|grep watch?v|grep title|sed 's/ /_/g;s/["&]/ /g'|awk '{print $5,"http://www.youtube.com"$2}'>/tmp/yt
-cat /tmp/yt|awk '{print $1}'|sed 's/_/ /g'|nl|more -d
-selectie
-break
-fi;
 if [[ "$titlu" = "l" ]];then clear
 echo -e $meniu1"Liste existente:"$posturi
 ls $HOME/.tvmaxe-cli/playlist/|nl
@@ -516,13 +506,14 @@ adr=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}
 soptest=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
 pls=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
 fi;
-if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]; then list=$playlist;else list=" ";fi;fi;
+if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]||[["$pls" = "m3u8"]]; then list=$playlist;else list=" ";fi;fi;
 echo -e $verde"procesez..."
 if [[ "$soptest" = "sop" ]]; then 
 $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $($player http://localhost:9901 &>/dev/null); killall sp-sc
 else
 $player $list $adr &>/dev/null
 fi;done;echo -e $esc;done
+
 
 
 
