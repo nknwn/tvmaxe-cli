@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
+while :;do
+while :;do
 #player='omxplayer -o hdmi'
-if [ ! -f $HOME/.tvmaxe-cli/config ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/config > $HOME/.tvmaxe-cli/config 
-fi;
-source $HOME/.tvmaxe-cli/config
-while :;do
-while :;do
-clear
-echo -e $meniu1 "_____  _   _  _   _    _    _   _  ___ ";echo  ")__ __(\ ( ) /) \_/ (  )_\  ) ( ) () __("
-echo  "  | |   )\_/( |  _  | /( )\  ) | ( | _) ";echo  "  )_(    \_/  )_( )_()_/ \_()_( )_()___(";echo;echo "              ___  __    ____ ";echo "             / __)(  )  (_  _)";echo "            ( (__  )(__  _)(_ ";echo "             \___)(____)(____)";echo
+. $HOME/.tvmaxe-cli/config
 testconnection=`wget --tries=3 --timeout=15 www.google.com -qO - &>/dev/null 2>&1`
 if [ $? != 0 ]; then for i in `seq 1 2`;do 
 clear;sleep 1;echo -e $atentie "! Verificati conexiunea la internet !"$esc;sleep 1;done; exit 1;fi;
+if [ ! -f $HOME/.tvmaxe-cli/config ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/config > $HOME/.tvmaxe-cli/config 
+fi;
+clear
+echo -e $meniu1 "_____  _   _  _   _    _    _   _  ___ ";echo  ")__ __(\ ( ) /) \_/ (  )_\  ) ( ) () __("
+echo  "  | |   )\_/( |  _  | /( )\  ) | ( | _) ";echo  "  )_(    \_/  )_( )_()_/ \_()_( )_()___(";echo;echo "              ___  __    ____ ";echo "             / __)(  )  (_  _)";echo "            ( (__  )(__  _)(_ ";echo "             \___)(____)(____)";echo
 depanare () {
 if [ ! -d $HOME/'.'tvmaxe-cli ];then mkdir -p $HOME/'.'tvmaxe-cli;fi;
 if [ ! -f $HOME/.tvmaxe-cli/subscrieri ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.tvmaxe-cli/subscrieri;fi
@@ -460,15 +460,19 @@ consola=`echo $DISPLAY'a'`
 echo -e $posturi "Lista canale:"
 if [[ "$consola" = "a" ]];then 
 if [[ "$sur" = "cooltv" ]];then
-wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4}'|sed 's/^...//;$d;s/-/_/g'|nl|column -c 30|column -t|more -d
+wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tmp2
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//'|awk '{print $4,$2}'>>/tmp/tmp2
+cat /tmp/tmp2|awk '{print $1}'|nl|column -c 30|column -t|more -d|sed 's/_/ /g'
 else
-wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/â/a/g;s/ă/a/g;s/ț/t/g;s/ș/s/g;s/î/i/g'|more -d
+wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/â/a/g;s/ă/a/g;s/ț/t/g;s/ș/s/g;s/î/i/g'|more -d|sed 's/_/ /g'
 fi;
 else
 if [[ "$sur" = "cooltv" ]];then
-wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4}'|sed 's/^...//;$d;s/-/_/g'|nl|column -c 30|column -t|more -d
+wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tmp2
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//'|awk '{print $4,$2}'>>/tmp/tmp2
+cat /tmp/tmp2|awk '{print $1}'|nl|column -c 30|column -t|more -d|sed 's/_/ /g'
 else
-wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|more -d
+wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|more -d|sed 's/_/ /g'
 fi;fi;
 echo -e $meniu1"Selectati numarul postului dorit sau" $atentie"r"$meniu1"eveniti"";"$atentie "q"$meniu1"uit" $atentie"i"$meniu1"nregistrati"$atentie
 read canal
@@ -479,9 +483,9 @@ read canal2
 clear
 echo inregistrez... 
 if [[ "$sur" = "cooltv" ]];then
-adr2=`wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//;$d'|awk '{print $2}'|sed -n "${canal2}p"`
+adr2=`cat /tmp/tmp2|awk '{print $2}'|sed -n "${canal2}p"`
 soptest2=sop
-numetv=`wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4}'|sed 's/^...//;$d;s/-/_/g'|sed -n "${canal2}p"`
+numetv=`cat /tmp/tmp2|awk '{print $1}'|sed -n "${canal2}p"`
 else
 adr2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"`
 numetv=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|sed -n "${canal2}p"`
@@ -492,28 +496,26 @@ data=`date +_%F_%H-%M-%S`
 echo $numetv
 if [[ "$pls2" = "pls" ]]||[[ "$pls2" = "m3u" ]]; then list="-playlist";else list=" ";fi;
 if [[ "$soptest2" = "sop" ]]; then 
-$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer -cache 500 http://localhost:9901 -dumpstream -dumpfile $salvare/$numetv$data.mp4 &>/dev/null &);sleep 5;wait $($player $salvare/$numetv$data.mp4); killall sp-sc mplayer;break 4;
+$(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer -cache 500 http://localhost:9901 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null &);sleep 5;wait $($player $salvare/$numetv$data.ts); killall sp-sc mplayer;break 4;
 else
-$(mplayer $list $adr2 -dumpstream -dumpfile $salvare/$numetv$data.mp4 &>/dev/null & ); sleep 10 ; wait $($player $salvare/$numetv$data.mp4); killall mplayer; break 4;
+$(mplayer $list $adr2 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null & ); sleep 10 ; wait $($player $salvare/$numetv$data.ts); killall mplayer; break 4;
 fi;fi;
 ############################
 if [[ "$canal" = *[[:digit:]]* ]];then clear
 if [[ "$sur" = "cooltv" ]];then
-adr=`wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//;$d'|awk '{print $2}'|sed -n "${canal}p"`
+adr=`cat /tmp/tmp2|awk '{print $2}'|sed -n "${canal}p"`
 soptest=sop
 else
 adr=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"`
 soptest=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
 pls=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
 fi;
-if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]||[["$pls" = "m3u8"]]; then list=$playlist;else list=" ";fi;fi;
+if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]||[[ "$pls" = "m3u8" ]]; then list=$playlist;else list=" ";fi;fi;
 echo -e $verde"procesez..."
-if [[ "$soptest" = "sop" ]]; then 
+if [[ "$soptest" = "sop" ]]; then
+clear; echo -e $verde"redau..."
 $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $($player http://localhost:9901 &>/dev/null); killall sp-sc
 else
 $player $list $adr &>/dev/null
 fi;done;echo -e $esc;done
-
-
-
 
