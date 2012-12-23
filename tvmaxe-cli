@@ -224,13 +224,15 @@ fi;done;done;done;fi
 if [[ "$sur" = "youtube" ]];then
 i=1
 youtube(){
-adresa=`cat /tmp/yt|awk '{print $2}'|sed -n "${p}p"`
+
+nume=`cat /tmp/yt1|awk '{print $1}'|sed -n "${p}p"`
+adresa=`cat /tmp/yt2|awk '{print $1}'|sed -n "${p}p"`
+adresa2=`cat /tmp/yt3|awk '{print $1}'|sed -n "${p}p"`
 wget -qO - "$adresa"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http >> /tmp/yt
-cat /tmp/yt|awk '{print "|Nume: "$1,"| Utilizator: "$3,"| Durata: "$4"|"}'|sed 's/_/ /g'|sed -n "${p}p"
+piesa=`cat /tmp/yt|sed -n '$p'`||wget -qO - "$adresa2"|grep signature|sed 's/ /_/g;s/%2F/\//g;s/\\//g;s/%F/?/g;s/%3D/=/g;s/%26/\&/g;s/%25/%/g;s/%3F/?/g;s/%3A/:/g;s/"/ /g;s/\u0026/\&/g;s/\generate_204/videoplayback/g'|awk '{print $4}'|grep http >> /tmp/yt
 piesa=`cat /tmp/yt|sed -n '$p'`
-nume1=`cat /tmp/yt|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
-nume=`cat /tmp/yt|awk '{print $1}'|sed -n "${p}p"`
 testpiesa=`wget --spider $piesa -qO - &>/dev/null 2>&1`
+#rm /tmp/yt*
 }
 youtube1(){
 cat $HOME/.tvmaxe-cli/playlist/$lista|awk '{print $2}'|sed 's/_/ /g'|nl
@@ -251,7 +253,7 @@ piesepl=`cat /tmp/yt|wc -l`
 echo $piesepl
 for p in `seq 1 $piesepl` ; do
 youtube
-nume1=`cat /tmp/yt|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
+nume1=`cat /tmp/yt1|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
 echo -e $posturi"Redau: "$fundal $nume1... $esc $posturi
 $player $piesa $postplay &>/dev/null
 done;break;fi;
@@ -260,7 +262,7 @@ piesepl=`cat /tmp/yt|wc -l`
 echo $piesepl
 for p in `seq 1 $piesepl` ; do
 youtube
-nume1=`cat /tmp/yt|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
+nume1=`cat /tmp/yt1|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
 echo -e $posturi"Redau: "$fundal $nume1... $esc $posturi
 $player $novideo $piesa $postplay &>/dev/null
 done;break;fi;
@@ -318,7 +320,7 @@ if [[ "$titlu" = "l" ]];then clear
 echo -e $meniu1"Liste existente:"$posturi
 ls $HOME/.tvmaxe-cli/playlist/|nl
 echo -e $meniu1"Alegeti lista pentru redare:"$posturi
-echo -e $meniu2"(Pentru a intrerupe bucla de redare, dupa inchiderea mplayer "q", tastati "ctrl+z")"$posturi
+echo -e $meniu2"(Pentru a intrerupe bucla de redare, dupa inchiderea player-ului "q", tastati "ctrl+z")"$posturi
 read pl;clear
 lista=`ls $HOME/.tvmaxe-cli/playlist/|sed -n "${pl}p"`
 echo -e $fundal $lista $esc $posturi
@@ -363,10 +365,13 @@ fi;done;fi;
 pagini=`wget -qO -  http://www.youtube.com/results?search_query="$titlu"|grep data-page|wc -l`
 > /tmp/yt
 for a in `seq 1 $pagini` ; do
-wget -qO - "http://www.youtube.com/results?search_query='$titlu'&page=$a"|grep item-title|grep video|sed 's/ /_/g;s/"/ /g'|sed 's/\&amp;quot;//g'|awk '{print $4,"http://www.youtube.com/watch?v="$12,$10,$8}' >> /tmp/yt
+wget -qO - "http://www.youtube.com/results?search_query='$titlu'&page=$a"|grep item-title|sed 's/ /_/g;s/"/ /g'|sed 's/\&amp;quot;//g'>>/tmp/yt
 done
 echo -e $posturi
-cat /tmp/yt|awk '{print $1}'|nl|column -t|sed 's/_/ /g;s/\&lt;b&gt;//g'|sed 's/\#39//g'|sed 's/&amp//'|more -d
+cat /tmp/yt|sed -e 's/^.*\(title=.*\).*$/\1/'|sed 's/ /_/g'|sed 's/[="]/ /g'|sed 's/data-/ /g'|awk '{print $2}'>/tmp/yt1
+cat /tmp/yt|sed -e 's/^.*\(id=.*\).*$/\1/'|sed 's/ /_/g'|sed 's/[="]/ /g'|sed 's/data-/ /g'|awk '{print "http://www.youtube.com/watch?v="$2}'|sed 's/_//g'>/tmp/yt2
+cat /tmp/yt|sed -e 's/^.*\(href=.*\).*$/\1/'|sed 's/ /_/g'|sed 's/[="]/ /g'|sed 's/data-/ /g'|awk '{print "http://www.youtube.com/watch?v="$3}'|sed 's/_//g'|sed 's/class//g'>/tmp/yt3
+cat /tmp/yt1|nl|column -t|sed 's/_/ /g;s/\&lt;b&gt;//g;s/\#39//g;s/&amp//'|more -d
 selectie
 done;done;fi
 #########################################################
@@ -383,18 +388,21 @@ if [[ "$testt" = "www.trilulilu.ro" ]];then
 echo `wget -qO - "$adresa"|grep userid|sed "s/ /_/g;s/,/\n /g"|grep 'server\|type\|source\|hash\|userid\|key'`>/tmp/caut
 funny=`cat /tmp/caut|sed 's/[=:]/ /g'|awk '{print "http://fs"$7".trilulilu.ro/stream.php?type=video&source=site&hash="$5"&username="$3"&key=&format=mp4-360p"}'|sed 's/"//g'`
 fi
+if [[ "$testt" = "izismile.com" ]];then
+funny=`cat /tmp/yt|awk '{print $2}'|sed -n "${p}p"`;fi
 ext=.mp4
 }
-clear;echo -e $meniu1 www.220.ro "&" www.trilulilu.ro $posturi
+clear;echo -e $meniu1 www.220.ro "&" www.trilulilu.ro "&" izismile.com $posturi
 wget -qO - http://st.220.t1.ro/rss/top|sed 's/<title>/\n/g;s/ /_/g;s/[<"?]/ /g'|grep href|awk '{print $1,$4,"www.220.ro"}'>/tmp/yt
 wget -qO - "http://www.trilulilu.ro/video-haioase?cele-mai-tari&azi"|grep '<span class="title"><a href='|sed 's/ /_/g;s/["><]/ /g'|awk '{print $5,$4,"www.trilulilu.ro"}'>>/tmp/yt
+wget -qO - http://izismile.com/videos/|grep "config: {"|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'|sed 's/\.flv/ /;s/\// /g'|awk '{print $7,$1"//"$2"/"$3"/"$4"/"$5"/"$6"/"$7".flv","izismile.com"}'>>/tmp/yt
 cat /tmp/yt|awk '{print $1,$3}'|column -t|sed 's/_/ /g'|nl
-echo -e $meniu1 Selectati numerele filmulmuletelor dorite sau redati $atentie"t"$meniu1"oate, "$atentie"c"$meniu1"autati" altele";" $atentie"r"$meniu1"eveniti"";"$atentie "q"$meniu1"uit"$verde
+echo -e $meniu1 Selectati numerele filmulmuletelor dorite sau redati $atentie"t"$meniu1"oate, "$atentie"c"$meniu1"autati" altele";"redati $atentie" f"$meniu1"avorite, " $atentie"r"$meniu1"eveniti"";"$atentie "q"$meniu1"uit"$verde
 echo -e $meniu2"(Pentru a intrerupe bucla de redare dupa inchiderea mplayer "q", tastati "ctrl+z")"$posturi
 read nr
 if [[ "$nr" = *[[:digit:]]* ]];then
 echo -e $posturi
-OPTIUNE="Redati Descarcati Reveniti Parasiti"
+OPTIUNE="Redati Descarcati Reveniti Parasiti Favorite_add Favorite_play"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]];then clear
 for p in $nr ; do
@@ -408,6 +416,12 @@ divertisment
 echo -e "Descarc..." $fundal$nume$esc$posturi
 axel -a -o $salvare/$nume$ext||wget -O $salvare/$nume$ext --progress=dot $funny 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
 echo -ne "\b\b\b\b";clear
+done; break 2
+elif [[ "$opt" = "Favorite_add" ]];then clear
+for p in $nr ; do
+divertisment
+echo -e $posturi"Adaug la favorite..."
+echo $nume" ""$funny" >> $HOME/'.'tvmaxe-cli/playlist/divertisment.div
 done; break 2
 elif [[ "$opt" = "Reveniti" ]];then break 2;
 elif [[ "$opt" = "Parasiti" ]];then echo -e $esc; exit;
@@ -435,6 +449,16 @@ if [[ "$nr" = "r" ]];then break 3;fi;
 if [[ "$nr" = "c" ]];then break;fi;
 if [[ "$nr" = "q" ]];then echo -e $esc;exit 0;fi;
 fi;
+if [[ "$nr" = "f" ]];then clear
+cat $HOME/'.'tvmaxe-cli/playlist/divertisment.div|awk '{print $1}'|sed 's/_/ /g'|nl
+nr1=`wc -l $HOME/'.'tvmaxe-cli/playlist/divertisment.div|awk '{print $1}'`
+for p in `seq 1 $nr1` ; do
+nume1=`cat $HOME/'.'tvmaxe-cli/playlist/divertisment.div|awk '{print $1}'|sed 's/_/ /g'|sed -n "${p}p"`
+funny1=`cat $HOME/'.'tvmaxe-cli/playlist/divertisment.div|awk '{print $2}'|sed -n "${p}p"`
+echo -e $posturi$p.$fundal$nume1
+$player "$funny1" $postplay &>/dev/null;clear
+done; break
+fi;
 echo -e $posturi
 OPTIUNE="Redati Descarcati Reveniti Parasiti"
 select opt in $OPTIUNE;do
@@ -461,16 +485,17 @@ echo -e $posturi "Lista canale:"
 if [[ "$consola" = "a" ]];then 
 if [[ "$sur" = "cooltv" ]];then
 wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tmp2
-wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//'|awk '{print $4,$2}'>>/tmp/tmp2
-cat /tmp/tmp2|awk '{print $1}'|nl|column -c 30|column -t|more -d|sed 's/_/ /g'
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//'|awk '{print $4,$2}'>>/tmp/tmp2;cat /tmp/tmp2|sort -d > /tmp/tmp3
+cat /tmp/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 else
 wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/â/a/g;s/ă/a/g;s/ț/t/g;s/ș/s/g;s/î/i/g'|more -d|sed 's/_/ /g'
 fi;
 else
 if [[ "$sur" = "cooltv" ]];then
 wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tmp2
-wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//'|awk '{print $4,$2}'>>/tmp/tmp2
-cat /tmp/tmp2|awk '{print $1}'|nl|column -c 30|column -t|more -d|sed 's/_/ /g'
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4,$2}'>>/tmp/tmp2;cat /tmp/tmp2|sort -d > /tmp/tmp3
+echo Posturi de pe coll-tv"&"etvonline
+cat /tmp/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 else
 wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|more -d|sed 's/_/ /g'
 fi;fi;
@@ -502,6 +527,7 @@ $(mplayer $list $adr2 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null
 fi;fi;
 ############################
 if [[ "$canal" = *[[:digit:]]* ]];then clear
+ipaddr=`ip addr|grep global|sed 's/\// /'|awk '{print $2}'`
 if [[ "$sur" = "cooltv" ]];then
 adr=`cat /tmp/tmp2|awk '{print $2}'|sed -n "${canal}p"`
 soptest=sop
@@ -514,6 +540,7 @@ if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]||[[ "$pls" = "m3u8" ]]; then list=
 echo -e $verde"procesez..."
 if [[ "$soptest" = "sop" ]]; then
 clear; echo -e $verde"redau..."
+echo -e "Difuzare in retea: "$ipaddr":9901"
 $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $($player http://localhost:9901 &>/dev/null); killall sp-sc
 else
 $player $list $adr &>/dev/null
