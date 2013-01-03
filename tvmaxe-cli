@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-mkdir -p /tmp/tvmaxe-cli
+mkdir -p /tmp/tvmaxe-cli 
 while :;do
+gol=`ls /tmp/tvmaxe-cli`
+if [[ "$gol" != "" ]]; then rm /tmp/tvmaxe-cli/* ;fi
 while :;do
 #player='omxplayer -o hdmi'
 . $HOME/.tvmaxe-cli/config
@@ -57,6 +59,8 @@ nano $HOME/.tvmaxe-cli/config||vim $HOME/.tvmaxe-cli/config||vi $HOME/.tvmaxe-cl
 exit 0;fi;
 if [[ "$sur" = "filme" ]];then
 while :;do
+gol=`ls /tmp/tvmaxe-cli`
+if [[ "$gol" != "" ]]; then rm /tmp/tvmaxe-cli/* ;fi
 while :;do
 clear
 echo -e $meniu1 Filme si seriale noi: www.990.ro$posturi
@@ -115,9 +119,8 @@ echo -e $posturi
 ###############################################################
 if [[ "$noutate" = "c" ]]; then read -p "Ce film cautam? " titlu
 wget -qO - "http://www.990.ro/cauta2.php?text=$titlu&submit=Cauta"|sed -n '/content_wrapper/,/post_title/ p'|grep titlu|sed 's/ /_/g;s/[<>"]/ /g'|awk '{print $5,$3,"Gasit_pe:_www.990.ro"}'>/tmp/tvmaxe-cli/caut
-echo `wget -qO - http://cinemaxx.rs/search.php?keywords=$titlu|grep 'rs/film\|song_name'|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $2,$8}'|sed 's/artist_name//g'`|sed "s/http/\n http/g"|awk '{print $2,$1,"Gasit_pe:_www.cinemaxx.rs"}'|sed '1d'>>/tmp/tvmaxe-cli/caut
-wget -qO - http://filmehd.net/?s=$titlu|sed -n '/search-movies/,/content / p'|grep jpg|sed 's/ /_/g;s/[";]/ /g;s/\&#8211//g;s/\&#039//g'|awk '{print $6,$4,"Gasit_pe:_filmehd.net"}'>>/tmp/tvmaxe-cli/caut
->> /tmp/tvmaxe-cli/caut
+wget -qO - http://cinemaxx.rs/search.php?keywords=$titlu|grep 'title="Film'|sed 's/ /_/g;s/"/ /g;s/Film_-_//g'|awk '{print $8,$4,"Gasit_pe:_www.cinemaxx.rs"}'>>/tmp/tvmaxe-cli/caut
+#wget -qO - http://filmehd.net/?s=$titlu|sed -n '/search-movies/,/content / p'|grep jpg|sed 's/ /_/g;s/[";]/ /g;s/\&#8211//g;s/\&#039//g'|awk '{print $6,$4,"Gasit_pe:_filmehd.net"}'>>/tmp/tvmaxe-cli/caut
 wget -qO - http://www.filmeonline.org/search/$titlu/|grep bookmark|sed 's/ /_/g;s/"/ /g'|awk '{print $8,$4,"Gasit_pe:_www.filmeonline.org"}'>>/tmp/tvmaxe-cli/caut
 wget -qO - http://www.filmeonlinefree.net/?s=$titlu|sed -n '/content start/,/content end/ p'|grep del.icio|sed 's/ /_/g;s/["=&]/ /g'|awk '{print $5,$3,"Gasit_pe:_www.filmeonlinefree.net"}'>>/tmp/tvmaxe-cli/caut
 ###############################################################
@@ -184,13 +187,13 @@ upload=`wget -qO - $adresa2|grep vk|sed 's/ /_/g;s/"/ /g;s/\;/\&/g'|awk '{print 
 wget -qO - "$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/tvmaxe-cli/surse
 descriere=`wget -qO - $adresa2|sed -n '/entry4/,/\.</ p'|sed 's/<[^>]*>/ /g'`
 fi;
-filtru=`wget -qO - $upload|grep "fastupload.ro"`
-if [[ -z $filtru ]];then
+filtru=`echo $upload|sed 's/\// /g'|awk '{print $2}'`
+if [[ "$filtru" != "fastupload.ro" ]];then
 film1=$(echo `cat /tmp/tvmaxe-cli/surse`|awk -v rez=$rez '{print $1"u"$2"/videos/"$3rez".mp4"}')
+ext=.flv
 else
 film1=`wget -qO - $upload|grep flv|sed "s/ /_/;s/'/ /g"|awk '{print $4}'`
 #film2=`wget -qO - $upload1|grep "video|"|sed 's/ /_/g;s/|/ /g'|awk '{print "http://"$10"."$9"."$8"."$7":"$20"/d/"$19"/video.flv"}'`
-ext=.flv
 fi;
 ################################################################
 testfilm=`wget --spider $film1 -qO - &>/dev/null 2>&1`
@@ -397,7 +400,7 @@ clear;echo -e $meniu1 www.220.ro "&" www.trilulilu.ro "&" izismile.com $posturi
 wget -qO - http://st.220.t1.ro/rss/top|sed 's/<title>/\n/g;s/ /_/g;s/[<"?]/ /g'|grep href|awk '{print $1,$4,"www.220.ro"}'>/tmp/tvmaxe-cli/yt
 wget -qO - "http://www.trilulilu.ro/video-haioase?cele-mai-tari&azi"|grep '<span class="title"><a href='|sed 's/ /_/g;s/["><]/ /g'|awk '{print $5,$4,"www.trilulilu.ro"}'>>/tmp/tvmaxe-cli/yt
 wget -qO - http://izismile.com/videos/|grep "config: {"|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'|sed 's/\.flv/ /;s/\// /g'|awk '{print $7,$1"//"$2"/"$3"/"$4"/"$5"/"$6"/"$7".flv","izismile.com"}'>>/tmp/tvmaxe-cli/yt
-cat /tmp/tvmaxe-cli/yt|awk '{print $1,$3}'|column -t|sed 's/_/ /g'|nl
+cat /tmp/tvmaxe-cli/yt|awk '{print $1,$3}'|column -t|sed 's/_/ /g'|nl|more -d
 echo -e $meniu1 Selectati numerele filmulmuletelor dorite sau redati $atentie"t"$meniu1"oate, "$atentie"c"$meniu1"autati" altele";"redati $atentie" f"$meniu1"avorite, " $atentie"r"$meniu1"eveniti"";"$atentie "q"$meniu1"uit"$verde
 echo -e $meniu2"(Pentru a intrerupe bucla de redare dupa inchiderea mplayer "q", tastati "ctrl+z")"$posturi
 read nr
@@ -545,4 +548,7 @@ echo -e "Difuzare in retea: "$ipaddr":9901"
 $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 10; wait $($player http://localhost:9901 &>/dev/null); killall sp-sc
 else
 $player $list $adr &>/dev/null
-fi;done;echo -e $esc;done
+fi;done;echo -e $esc;
+gol=`ls /tmp/tvmaxe-cli`
+if [[ "$gol" != "" ]]; then rm /tmp/tvmaxe-cli/* ;fi
+done
