@@ -29,7 +29,7 @@ $coordonate -aspect $aspect -osdlevel 3"
 #player=vlc
 #postplay=vlc://quit #postplay este situat: player fisier postplay, in cazul de fata are rol in inchiderea vlc dupa ce a fost redat fisierul;
 #playlist este necesar pentru redarea stream m3u,pls; vlc nu necesita aceasta variabila.
-#playlist=-playlist
+playlist=-playlist
 #novideo este necesar pentru redarea doar audio in youtube
 novideo=-novideo
 ################################################

@@ -15,7 +15,7 @@ clear
 echo -e $meniu1 "_____  _   _  _   _    _    _   _  ___ ";echo  ")__ __(\ ( ) /) \_/ (  )_\  ) ( ) () __("
 echo  "  | |   )\_/( |  _  | /( )\  ) | ( | _) ";echo  "  )_(    \_/  )_( )_()_/ \_()_( )_()___(";echo;echo "              ___  __    ____ ";echo "             / __)(  )  (_  _)";echo "            ( (__  )(__  _)(_ ";echo "             \___)(____)(____)";echo
 depanare () {
-if [ ! -d $HOME/'.'tvmaxe-cli ];then mkdir -p $HOME/'.'tvmaxe-cli;fi;
+if [ ! -d $HOME/'.'tvmaxe-cli ];then mkdir -p $HOME/'.'tvmaxe-cli;chmod 775 $HOME/'.'tvmaxe-cli;fi;
 if [ ! -f $HOME/.tvmaxe-cli/subscrieri ];then wget -qO - https://raw.github.com/nknwn/tvmaxe-cli/master/.subscrieri > $HOME/.tvmaxe-cli/subscrieri;fi
 if [ ! -f $HOME/.tvmaxe-cli/.commit_tv ];then  wget -qO - https://github.com/nknwn/tvmaxe-cli/commits/master|grep sha|sed -n '1p'|sed 's/ /_/g;s/[><]/ /g'|awk '{print $3}' > $HOME/.tvmaxe-cli/.commit_tv; fi;
 if [ -f $HOME/.tvmaxe-cli/.commit_tv ]; then
@@ -32,7 +32,7 @@ fi;fi;
 if [ ! -d $HOME/'.'tvmaxe-cli ];then
 while :;do
 depanare
-echo Reporniti tvmaxe-cli
+echo Reporniti tvmaxe-cli de 2 ori, tasta '"q"'
 sleep 1
 break
 done
@@ -194,6 +194,7 @@ ext=.flv
 else
 film1=`wget -qO - $upload|grep flv|sed "s/ /_/;s/'/ /g"|awk '{print $4}'`
 #film2=`wget -qO - $upload1|grep "video|"|sed 's/ /_/g;s/|/ /g'|awk '{print "http://"$10"."$9"."$8"."$7":"$20"/d/"$19"/video.flv"}'`
+ext=.flv
 fi;
 ################################################################
 testfilm=`wget --spider $film1 -qO - &>/dev/null 2>&1`
