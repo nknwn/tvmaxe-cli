@@ -65,7 +65,7 @@ while :;do
 clear
 echo -e $meniu1 Filme si seriale noi: www.990.ro$posturi
 wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//'|nl|sed '$d'|sed '$d'|more -d
-echo -e $meniu1"Selectati numarul filmului dorit sau "$atentie"c"$meniu1"autati altul; " $atentie"n"$meniu1"avigare, "$atentie"r"$meniu1"eveniti; "$atentie "q"$meniu1"uit"$atentie
+echo -e $meniu1"Selectati numarul filmului dorit sau redati din "$atentie"f"$meniu1"avorite, "$atentie"c"$meniu1"autati altul; "$atentie"n"$meniu1"avigare, "$atentie"r"$meniu1"eveniti; "$atentie "q"$meniu1"uit"$atentie
 read noutate
 if [[ "$noutate" = "n" ]];then clear; echo -e $meniu1"Filme dupa gen (990):"$posturi
 wget -qO - http://www.990.ro|sed -n '/dupa gen/,/\/ul/ p'|sed '1,2d;$d'|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $7,"http://www.990.ro/"$4}'>/tmp/tvmaxe-cli/caut
@@ -97,7 +97,7 @@ server1=`wget -qO - $adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2
 upload=`wget -qO - $server1|grep fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'`
 #upload1=`wget -qO - $server2|grep 180upload|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'`
 nume=`cat /tmp/tvmaxe-cli/tmp1|awk '{print $1}'|sed -n "${filmgen}p"`
-descriere=`wget -qO - $adresa|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/ /g'`
+descriere=`wget -qO - $adresa|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/_/g'`
 >/tmp/tvmaxe-cli/yt
 fi;fi;
 fi
@@ -109,7 +109,7 @@ adresa=`wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|s
 server1=`wget -qO - http://www.990.ro/$adresa|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 #server2=`wget -qO - http://www.990.ro/$adresa|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
 nume=`wget -qO - http://www.990.ro|sed -n '/border:1/,/clear:/ p'|grep title|sed 's/<[^>]*>/ /g;s/^[ \t]*//;s/[ \t]*$//;s/ /_/g'|sed -n "${noutate}p"`
-descriere=`wget -qO - http://www.990.ro/$adresa|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/ /g'`
+descriere=`wget -qO - http://www.990.ro/$adresa|sed -n "/colspan='2'/,/\/blockquote/ p"|sed 's/<[^>]*>/_/g'`
 #################################################################
 upload=`wget -qO - $server1|grep fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'`
 #upload1=`wget -qO - $server2|grep 180upload|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'`
@@ -145,7 +145,7 @@ selectie=`echo $adresa2|sed 's/-/ /g'|awk '{print $1}'`
 if [[ "$selectie" = "filme" ]]; then
 server1=`wget -qO - http://www.990.ro/$adresa2|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3}'`
 #server2=`wget -qO - http://www.990.ro/$adresa2|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$2'}`
-descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed "s/<[^>]*>/ /g;s/:/\n/"`
+descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed "s/<[^>]*>/_/g;s/:/\n/"`
 fi
 #################################################################
 if [[ "$selectie" = "seriale" ]]; then
@@ -157,7 +157,7 @@ if [[ "$nr" = "c" ]];then break;fi;
 if [[ "$nr" = "q" ]];then echo -e $esc;exit 0;fi;
 sezoane=`wget -qO - http://www.990.ro/$adresa2|sed -n '/show_faces/,/sidebar_wrapper/ p'|grep href|sed "s/px;/\n/g;s/ /_/g;s/[><']/ /g"|grep href|awk '{print $6}'|sed -n "${nr}p"`
 nume=`wget -qO - http://www.990.ro/$adresa2|sed -n '/show_faces/,/sidebar_wrapper/ p'|grep href|sed "s/px;/\n/g;s/ /_/g;s/[><']/ /g"|grep href|awk '{print $7}'|sed -n "${nr}p"`
-descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed "s/<[^>]*>/ /g;s/:/\n/g"`
+descriere=`wget -qO - http://www.990.ro/$adresa2|sed -n "/colspan='2'/,/\/blockquote/ p"|sed "s/<[^>]*>/_/g;s/:/\n/g"`
 server1=`wget -qO - http://www.990.ro/$sezoane|grep Fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 #server2=`wget -qO - http://www.990.ro/$sezoane|grep 180upload|sed "s/ /_/g;s/'/ /g"|awk '{print $2}'|sed 's/:/ /g'|awk '{print "http:"$3'}`
 fi;
@@ -168,25 +168,35 @@ upload=`wget -qO - $server1|grep fastupload|sed "s/ /_/g;s/'/ /g"|awk '{print $2
 fi;fi
 if [[ "$sursa" = "filmehd.net" ]];then
 upload=`wget -qO - $adresa2|grep vk|sed 's/ /_/g;s/"/ /g;s/amp;//g'|awk '{print $2}'`
-descriere=`wget -qO - $adresa2|grep og:description|sed 's/ /_/g;s/"/ /g'|awk '{print $4}'|sed 's/_/ /g'`
+descriere=`wget -qO - $adresa2|grep og:description|sed 's/ /_/g;s/"/ /g'|awk '{print $4}'`
 wget -qO - "$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/tvmaxe-cli/surse
 fi;
 if [[ "$sursa" = "www.cinemaxx.rs" ]];then
 upload=`wget -qO - $adresa2|grep vk|sed 's/ /_/g;s/"/ /g'|awk '{print $2}'`
 wget -qO - "$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/tvmaxe-cli/surse
-descriere=`wget -qO - $adresa2|sed -n '/Descriere/,/Taguri/ p'|sed 's/<[^>]*>/ /g'|sed '1d;$d'`
+descriere=`wget -qO - $adresa2|sed -n '/Descriere/,/Taguri/ p'|sed 's/<[^>]*>/ /g'|sed '1d;$d'|sed 's/ /_/g'`
 fi;
 if [[ "$sursa" = "www.filmeonline.org" ]];then
 upload=`wget -qO - $adresa2|grep VK|sed 's/ /_/g;s/"/ /g;s/?/ /g;s/\;/\&/g;s/\#038//g'|sed -n '1p'|awk '{print $3}'`
 wget -qO - "http://vk.com/video_ext.php?$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/tvmaxe-cli/surse
-descriere=`wget -qO - $adresa2|sed -n '/itemprop/,/more-/ p'|sed 's/<[^>]*>/ /g'`
+descriere=`wget -qO - $adresa2|sed -n '/itemprop/,/more-/ p'|sed 's/<[^>]*>/_/g'`
 #are si fastupload
 fi;
 if [[ "$sursa" = "www.filmeonlinefree.net" ]];then
 upload=`wget -qO - $adresa2|grep vk|sed 's/ /_/g;s/"/ /g;s/\;/\&/g'|awk '{print $4}'`
 wget -qO - "$upload"|sed -n '/video_host/,/video_vtag/ p'|sed "s/ /_/g;s/'/ /g"|awk '{print $2}' > /tmp/tvmaxe-cli/surse
-descriere=`wget -qO - $adresa2|sed -n '/entry4/,/\.</ p'|sed 's/<[^>]*>/ /g'`
+descriere=`wget -qO - $adresa2|sed -n '/entry4/,/\.</ p'|sed 's/<[^>]*>/_/g'`
 fi;
+#####################################################
+if [[ "$noutate" = "f" ]];then cat $HOME/.tvmaxe-cli/playlist/filme.fl|awk '{print $1}'|sed 's/_/ /g'|more -d|nl
+echo -e $meniu1 "Alegeti numarul filmului dorit:"
+read favorit
+nume=`cat $HOME/.tvmaxe-cli/playlist/filme.fl|awk '{print $1}'|sed -n "${favorit}p"`
+upload=`cat $HOME/.tvmaxe-cli/playlist/filme.fl|awk '{print $2}'|sed -n "${favorit}p"`
+ext=.flv
+descriere=`cat $HOME/.tvmaxe-cli/playlist/filme.fl|awk '{print $3}'|sed -n "${favorit}p"`
+fi;
+######################################################
 filtru=`echo $upload|sed 's/\// /g'|awk '{print $2}'`
 if [[ "$filtru" != "fastupload.ro" ]];then
 film1=$(echo `cat /tmp/tvmaxe-cli/surse`|awk -v rez=$rez '{print $1"u"$2"/videos/"$3rez".mp4"}')
@@ -197,20 +207,24 @@ film1=`wget -qO - $upload|grep flv|sed "s/ /_/;s/'/ /g"|awk '{print $4}'`
 ext=.flv
 fi;
 ################################################################
-testfilm=`wget --spider $film1 -qO - &>/dev/null 2>&1`
+testfilm=`wget --spider "$film1" -qO - &>/dev/null 2>&1`
 if [ $? != 0 ]; then for i in `seq 1 2`;do 
 clear;sleep 1;echo -e $atentie "! Se pare ca fisierul nu mai exista !"$posturi;sleep 1;done;break;fi;
 ################################################################
 echo -e $fundal$nume$esc
-echo -e $posturi$descriere
+echo -e $posturi$descriere|sed 's/_/ /g'
 ################################################################
 echo -e $meniu1
-OPTIUNE="Redati Descarcati Inregistrati Cautati Reveniti Parasiti"
+OPTIUNE="Redati Favorite Descarcati Inregistrati Cautati Reveniti Parasiti"
 select opt in $OPTIUNE;do
 if [[ "$opt" = "Redati" ]]; then clear
 echo -e $posturi"Redau:" $fundal$nume...$esc
 $player $film1 $postplay &>/dev/null
 clear;echo -e $posturi"Ati vizionat: "$fundal$nume$esc;sleep 3;break
+elif [[ "$opt" = "Favorite" ]]; then mkdir -p $HOME/'.'tvmaxe-cli/playlist
+descriere1=`echo $descriere|sed 's/ /_/g'`
+echo $nume $upload $descriere1 >> $HOME/.tvmaxe-cli/playlist/filme.fl 
+break 4
 elif [[ "$opt" = "Descarcati" ]]; then axel -a -o $salvare/$nume$ext $film1||wget -O $salvare/$nume$ext --progress=dot $film1 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
 echo -ne "\b\b\b\b";break
 elif [[ "$opt" = "Cautati" ]];then clear; break;
