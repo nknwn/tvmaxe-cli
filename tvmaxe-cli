@@ -504,17 +504,53 @@ echo -e $posturi "Lista canale:"
 if [[ "$consola" = "a" ]];then 
 if [[ "$sur" = "cooltv" ]];then
 wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tvmaxe-cli/tmp2
-wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//'|awk '{print $4,$2}'>>/tmp/tvmaxe-cli/tmp2;cat /tmp/tvmaxe-cli/tmp2|sort -d > /tmp/tvmaxe-cli/tmp3
-cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//'|awk '{print $4,$2}'>>/tmp/tvmaxe-cli/tmp2;cat /tmp/tvmaxe-cli/tmp2 > /tmp/tvmaxe-cli/tmp3
+#################
+nrpost=`cat /tmp/tvmaxe-cli/tmp3|wc -l`
+>/tmp/tvmaxe-cli/tmp4
+echo Analizez posturile "("$nrpost") " active":"
+for p in `seq 1 $nrpost` ; do
+adr=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${p}p"`
+post=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|sed -n "${p}p"`
+$(sp-sc $adr 8901 9901 &>/dev/null &);sleep 5; wait 
+$(testpost=`wget --spider http://localhost:9901  -qO -&>/dev/null 2>&1`)
+if [ $? != 0 ]; then
+echo -e $rosu $p $post inactiv $adr $esc
+#echo $p $post $adr NO>>/tmp/tvmaxe-cli/tmp4
+else
+echo -e $verde $p $post activ $adr $esc
+#echo $p $post $adr OK>>/tmp/tvmaxe-cli/tmp4
+fi
+killall sp-sc
+done
+#cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 else
 wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/â/a/g;s/ă/a/g;s/ț/t/g;s/ș/s/g;s/î/i/g'|more -d|sed 's/_/ /g'
 fi;
 else
 if [[ "$sur" = "cooltv" ]];then
 wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tvmaxe-cli/tmp2
-wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4,$2}'>>/tmp/tvmaxe-cli/tmp2;cat /tmp/tvmaxe-cli/tmp2|sort -d > /tmp/tvmaxe-cli/tmp3
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4,$2}'>>/tmp/tvmaxe-cli/tmp2;cat /tmp/tvmaxe-cli/tmp2 > /tmp/tvmaxe-cli/tmp3
 echo Posturi de pe coll-tv"&"etvonline
-cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+#################
+nrpost=`cat /tmp/tvmaxe-cli/tmp3|wc -l`
+#>/tmp/tvmaxe-cli/tmp4
+echo Analizez posturile "("$nrpost") " active":"
+for p in `seq 1 $nrpost` ; do
+adr=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${p}p"`
+post=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|sed -n "${p}p"`
+$(sp-sc $adr 8901 9901 &>/dev/null &);sleep 5; wait 
+$(testpost=`wget --spider http://localhost:9901  -qO -&>/dev/null 2>&1`)
+if [ $? != 0 ]; then
+echo -e $rosu $p $post inactiv $esc
+#echo $p $post $adr NO>>/tmp/tvmaxe-cli/tmp4
+else
+echo -e $verde $p $post activ $esc
+#echo $p $post $adr OK>>/tmp/tvmaxe-cli/tmp4
+fi
+killall sp-sc
+done
+#cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 else
 wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|more -d|sed 's/_/ /g'
 fi;fi;
