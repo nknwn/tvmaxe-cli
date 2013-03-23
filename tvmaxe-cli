@@ -547,13 +547,9 @@ $(mplayer $list $adr2 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null
 fi;fi;
 ############################
 if [[ "$canal" = *[[:digit:]]* ]];then clear
-ipaddr1=$(ip addr|grep global|sed 's/\// /'|awk '{print $2}')
-ipaddr2=$(ifconfig | grep 'inet ' | grep -v '127.0.0.1' | head -n1 | awk '{print $2}')
-if [ $ipaddr1 != 0 ]; then
-ipaddr=$ipddr1
-else
-ipaddr=$ipddr2
-fi
+ipaddr1=`ip addr|grep global|sed 's/\// /'|awk '{print $2}'`
+ipaddr2=`ifconfig | grep 'inet ' | grep -v '127.0.0.1' | head -n1 | awk '{print $2}'`
+ipaddr=$ipaadr1||ipaddr=$ipaddr2
 if [[ "$sur" = "cooltv" ]];then
 adr=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $2}'|sed -n "${canal}p"`
 soptest=sop
@@ -565,14 +561,14 @@ fi;
 if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]||[[ "$pls" = "m3u8" ]]; then list=$playlist;else list=" ";fi;fi;
 echo -e $verde"procesez..."
 if [[ "$soptest" = "sop" ]]; then
-$(sp-sc $adr 8901 9901 &>/dev/null &);sleep 10; wait 
+$(sp-sc $adr 8901 9901 &>/dev/null &);sleep 15; wait 
 $(testpost=`wget --spider http://localhost:9901  -qO -&>/dev/null 2>&1`)
 if [ $? != 0 ]; then
 echo -e $rosu adresa $adr inactiva $esc
 sleep 3
 break
 else
-clear; echo -e $verde"redau..."$adr
+clear; echo -e $verde"redau..."
 echo -e "Difuzare in retea: "$ipaddr":9901"
 $($player http://localhost:9901 &>/dev/null); killall sp-sc
 fi;
