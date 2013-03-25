@@ -506,16 +506,17 @@ echo -e $posturi "Lista canale:"
 if [[ "$consola" = "a" ]];then 
 if [[ "$sur" = "cooltv" ]];then
 #wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tvmaxe-cli/tmp2
-wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//'|awk '{print $4,$2}'>>/tmp/tvmaxe-cli/tmp2;cat /tmp/tvmaxe-cli/tmp2 > /tmp/tvmaxe-cli/tmp3
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4,$2}'>/tmp/tvmaxe-cli/tmp2
+cat /tmp/tvmaxe-cli/tmp2|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 else
 wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/â/a/g;s/ă/a/g;s/ț/t/g;s/ș/s/g;s/î/i/g'|more -d|sed 's/_/ /g'
 fi;
 else
 if [[ "$sur" = "cooltv" ]];then
 #wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tvmaxe-cli/tmp2
-wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4,$2}'>>/tmp/tvmaxe-cli/tmp2;cat /tmp/tvmaxe-cli/tmp2 > /tmp/tvmaxe-cli/tmp3
-echo Posturi de pe coll-tv"&"etvonline
-cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4,$2}'>/tmp/tvmaxe-cli/tmp2
+echo Posturi de pe etvonline
+cat /tmp/tvmaxe-cli/tmp2|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 else
 wget -qO - $sur|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|more -d|sed 's/_/ /g'
 fi;fi;
