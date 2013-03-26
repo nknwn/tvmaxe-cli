@@ -503,11 +503,24 @@ fi;done;done;done;fi
 #########################################################
 if [[ "$sur" = "romania" ]];then
 #wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tvmaxe-cli/tmp2
-wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4,$2" etvonline"}'>/tmp/tvmaxe-cli/tmp2
- wget -qO - http://inbuzunar.mobi/live.php?query=media-direct|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4,$3" inbuzunar.mobi"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - http://pymaxe.com/tvmaxe/Romania.php|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2,$4" tvmaxe"}'>>/tmp/tvmaxe-cli/tmp2
-echo "Posturi TV:"
-cat /tmp/tvmaxe-cli/tmp2|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4"|"$2"|etvonline"}'>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=media-direct"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar.mobi"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=rcs-rds"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar.mobi"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar.mobi"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar.mobi"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - http://pymaxe.com/tvmaxe/Romania.php|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2"|"$4"|tvmaxe"}'>>/tmp/tvmaxe-cli/tmp2
+echo -e $posturi"Posturi TV:"
+cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>/tmp/tvmaxe-cli/tmp3
+cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+##############################################3
+elif [[ "$sur" = "basarabia" ]];then
+wget -qO - http://inbuzunar.mobi/live.php?query=jv-sun|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4,$3}'> /tmp/tvmaxe-cli/tmp3
+echo -e $posturi"Posturi TV:"
+cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+elif [[ "$sur" = "international" ]];then
+wget -qO - "http://inbuzunar.mobi/live.php?query=lsops"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4,$3" inbuzunar.mobi"}'>/tmp/tvmaxe-cli/tmp3
+echo -e $posturi"Posturi TV:"
+cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 else
 wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 fi;
@@ -519,13 +532,13 @@ if [[ "$canal" = "i" ]]; then echo "Alegeti postul dorit pentru inregistrare:"
 read canal2
 clear
 echo inregistrez... 
-if [[ "$sur" = "romania" ]];then
-adr2=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $2}'|sed -n "${canal2}p"`
-soptest2=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $2}'|sed -n "${canal2}p"|sed 's/:/ /g'|awk '{print $1}'`
-m3u8test2=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $2}'|sed -n "${canal2}p"|sed 's/?/ /'|sed -e 's/^.*\(m3u8[^ ,]*\).*$/\1/'`
-numetv=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $1}'|sed -n "${canal2}p"`
-pls2=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $2}'|sed -n "${canal2}p"|sed 's/\./ /g'|awk '{ print $NF }'`
-#pls2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+if [[ "$sur" = "romania" ]] || [[ "$sur" = "international" ]]||[[ "$sur" = "basarabia" ]];then
+adr2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"`
+soptest2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"|sed 's/:/ /g'|awk '{print $1}'`
+m3u8test2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"|sed 's/?/ /'|sed -e 's/^.*\(m3u8[^ ,]*\).*$/\1/'`
+numetv=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|sed -n "${canal2}p"`
+pls2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+rtsptest2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"|sed 's/:/ /g'|awk '{print $1}'`
 else
 adr2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"`
 pls2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
@@ -539,6 +552,10 @@ elif [[ "$m3u8test2" = "m3u8" ]]; then
 ffmpeg -y -i "$adr2" -acodec libmp3lame -ar 44100 -vcodec copy -f flv  $salvare/$numetv$data.flv &>/dev/null & 
 sleep 10 
 $player $salvare/$numetv$data.flv; killall ffmpeg;break 4;
+elif [[ "$rtsptest2" = "rtsp" ]]; then 
+ffmpeg -y -i "$adr2" -acodec libmp3lame -ar 22050 -vcodec libx264  -f flv $salvare/$numetv$data.flv &>/dev/null & 
+sleep 10 
+$player $salvare/$numetv$data.flv; killall ffmpeg;break 4;
 else
 $(mplayer $list $adr2 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null & ); sleep 10 ; wait $($player $salvare/$numetv$data.ts); killall mplayer; break 4;
 fi;fi;
@@ -547,17 +564,18 @@ if [[ "$canal" = *[[:digit:]]* ]];then clear
 #ipaddr1=`ip addr|grep global|sed 's/\// /'|awk '{print $2}'`
 #ipaddr2=`ifconfig | grep 'inet ' | grep -v '127.0.0.1' | head -n1 | awk '{print $2}'`
 #ipaddr=$ipaddr1||ipaddr=$ipaddr2
-if [[ "$sur" = "romania" ]];then
-adr=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $2}'|sed -n "${canal}p"`
-soptest=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
-m3u8test=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $2}'|sed -n "${canal}p"|sed 's/?/ /'|sed -e 's/^.*\(m3u8[^ ,]*\).*$/\1/'`
-numetv=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $1}'|sed -n "${canal}p"`
-pls=`cat /tmp/tvmaxe-cli/tmp2|awk '{print $2}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+if [[ "$sur" = "romania" ]] || [[ "$sur" = "basarabia" ]]||[[ "$sur" = "international" ]];then
+adr=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"`
+soptest=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
+m3u8test=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"|sed 's/?/ /'|sed -e 's/^.*\(m3u8[^ ,]*\).*$/\1/'`
+rtsptest=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
+numetv=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|sed -n "${canal}p"`
+pls=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
 else
 adr=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"`
 pls=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
 fi;
-if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]||[[ "$pls" = "m3u8" ]]; then list=$playlist;else list=" ";fi;fi;
+if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]; then list=$playlist;else list=" ";fi;fi;
 echo -e $verde"procesez..."
 if [[ "$soptest" = "sop" ]]; then
 $(sp-sc $adr 8901 9901 &>/dev/null &);sleep 15; wait 
@@ -572,8 +590,12 @@ echo -e "Difuzare in retea: http://localhost:9901"
 $($player http://localhost:9901 &>/dev/null); killall sp-sc
 fi;
 elif [[ "$m3u8test" = "m3u8" ]]; then 
-echo adr $adr
-ffmpeg -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv -|$player -; killall ffmpeg;break ;
+ffmpeg -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv -|$player &>/dev/null -; killall ffmpeg;break ;
+elif [[ "$rtsptest" = "rtsp" ]]; then 
+if [[ "$player" = "vlc" ]]; then $player $adr ;break
+else
+ffmpeg -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264 -f flv -|$player -; killall ffmpeg;break ;
+fi;
 else
 $player $list $adr #&>/dev/null
 fi;done;echo -e $esc;
