@@ -27,7 +27,7 @@ if [[ "$commit1" != "$commit2" ]]; then
 echo -e $atentie"Actualizare: "$meniu2 http://nknwn.github.com/tvmaxe-cli/ $atentie
 echo -e Pentru a actuaiza doar tvmaxe-cli alegeti '"a"', pentru a actualiza si subscrierile alegeti '"as"', pentru a actualiza fisierul de configurare alegeti '"conf"'
 echo -e Atentie! actualizarea '"as"' presupune suprascrierea fisierului '"subscrieri"'$meniu2;
-wget -qO - http://pastebin.com/raw.php?i=zadMXuWU;echo -e $verde
+wget -qO - https://github.com/nknwn/tvmaxe-cli/blob/master/tvmaxe-cli|grep '"message">'|sed 's/<[^>]*>/ /g';echo -e $verde
 fi;fi;
 }
 if [ ! -d $HOME/'.'tvmaxe-cli ];then
@@ -38,7 +38,7 @@ sleep 1
 break
 done
 fi;
-echo v.0.3.9b commit: `cat $HOME/.tvmaxe-cli/.commit_tv|sed -n '$p'`;echo
+echo v.0.4.0 commit: `cat $HOME/.tvmaxe-cli/.commit_tv|sed -n '$p'`;echo
 $dep
 cat $HOME/.tvmaxe-cli/subscrieri|sed -n '$p'|sed 's/||/\n /g'|awk '{print $1}'|nl|column -c 30|column -t|more -d
 echo -e $cyan"Alegeti numarul subscrierii dorite, "$atentie"c"$meniu2"onfigurare, "$atentie"q"$meniu2"uit;"
@@ -504,11 +504,11 @@ fi;done;done;done;fi
 if [[ "$sur" = "romania" ]];then
 #wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tvmaxe-cli/tmp2
 wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4"|"$2"|etvonline"}'>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=media-direct"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar.mobi"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=rcs-rds"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar.mobi"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar.mobi"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar.mobi"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - http://pymaxe.com/tvmaxe/Romania.php|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2"|"$4"|tvmaxe"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=media-direct"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=rcs-rds"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - http://tv-maxe.org/subscriptions/Romania.php|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2"|"$4"|tvmaxe"}'>>/tmp/tvmaxe-cli/tmp2
 echo -e $posturi"Posturi TV:"
 cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>/tmp/tvmaxe-cli/tmp3
 cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
@@ -553,7 +553,8 @@ ffmpeg -y -i "$adr2" -acodec libmp3lame -ar 44100 -vcodec copy -f flv  $salvare/
 sleep 10 
 $player $salvare/$numetv$data.flv; killall ffmpeg;break 4;
 elif [[ "$rtsptest2" = "rtsp" ]]; then 
-ffmpeg -y -i "$adr2" -acodec libmp3lame -ar 22050 -vcodec libx264  -f flv $salvare/$numetv$data.flv &>/dev/null & 
+ffmpeg -y -i "$adr2" -acodec copy -vcodec copy -r 20 -f flv $salvare/$numetv$data.flv &>/dev/null & 
+#ffmpeg -y -i "$adr2" -acodec libmp3lame -ar 22050 -vcodec libx264  -f flv $salvare/$numetv$data.flv &>/dev/null & 
 sleep 10 
 $player $salvare/$numetv$data.flv; killall ffmpeg;break 4;
 else
@@ -594,7 +595,8 @@ ffmpeg -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv -|$player &
 elif [[ "$rtsptest" = "rtsp" ]]; then 
 if [[ "$player" = "vlc" ]]; then $player $adr ;break
 else
-ffmpeg -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264 -f flv -|$player -; killall ffmpeg;break ;
+ffmpeg -y -i "$adr" -acodec copy -vcodec copy -r 20 -f flv -|$player -; killall ffmpeg;break ;
+#ffmpeg -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264 -f flv -|$player -; killall ffmpeg;break ;
 fi;
 else
 $player $list $adr #&>/dev/null
