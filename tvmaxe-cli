@@ -591,7 +591,7 @@ echo -e "Difuzare in retea: http://localhost:9901"
 $($player http://localhost:9901 &>/dev/null); killall sp-sc
 fi;
 elif [[ "$m3u8test" = "m3u8" ]]; then 
-ffmpeg -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv -|$player &>/dev/null -; killall ffmpeg;break ;
+$(ffmpeg -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv - 2>/dev/null|$player - );stty sane
 elif [[ "$rtsptest" = "rtsp" ]]; then 
 if [[ "$player" = "vlc" ]]; then $player $adr ;break
 else
