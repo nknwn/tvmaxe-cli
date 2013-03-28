@@ -27,7 +27,7 @@ if [[ "$commit1" != "$commit2" ]]; then
 echo -e $atentie"Actualizare: "$meniu2 http://nknwn.github.com/tvmaxe-cli/ $atentie
 echo -e Pentru a actuaiza doar tvmaxe-cli alegeti '"a"', pentru a actualiza si subscrierile alegeti '"as"', pentru a actualiza fisierul de configurare alegeti '"conf"'
 echo -e Atentie! actualizarea '"as"' presupune suprascrierea fisierului '"subscrieri"'$meniu2;
-wget -qO - https://github.com/nknwn/tvmaxe-cli/blob/master/tvmaxe-cli|grep '"message">'|sed 's/<[^>]*>/ /g';echo -e $verde
+wget -qO - https://github.com/nknwn/tvmaxe-cli/commits/master|grep '"message">'|sed 's/<[^>]*>/ /g'|sed '2,$d';echo -e $verde
 fi;fi;
 }
 if [ ! -d $HOME/'.'tvmaxe-cli ];then
