@@ -522,22 +522,35 @@ wget -qO - "http://inbuzunar.mobi/live.php?query=lsops"|grep m3u8|grep href|sed 
 echo -e $posturi"Posturi TV:"
 cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 elif [[ "$sur" = "shoutcast" ]];then
+while :;do
+clear
 wget -qO - http://www.shoutcast.com/radio/genres|sed -n '/Radio Genres/,/Top genres/ p'|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $8,"http://www.shoutcast.com"$7}' > /tmp/tvmaxe-cli/tmp3
-echo -e $posturi
+echo -e $fundal"Genuri muzicale"$esc$posturi
 cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g;s/\&amp;/\&/g'|more -d
-echo -e $meniu1"Alegeti genul dorit, sau $atentie"c"$meniu1"autati" o statie radio"
+echo -e $meniu1"Alegeti genul dorit, sau $atentie"c"$meniu1"autati" o statie radio, $atentie"q"$meniu1"uit""
 read genres
-if [[ "$genres" = "c" ]];then
+if [[ "$genres" = "q" ]];then exit
+elif [[ "$genres" = "c" ]];then clear
 echo -e $meniu1"Ce post radio cautati?"$posturi
 read post
 wget -qO - http://www.shoutcast.com/Internet-Radio/"$post"|grep tunein-station|grep  clickabletitle|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $9,$11}'>/tmp/tvmaxe-cli/tmp3
-cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|sed 's/_/ /g;s/\&amp;/\&/g'|more -d
+if [[ -z `cat /tmp/tvmaxe-cli/tmp3` ]];then clear
+echo -e $atentie"Nu am gasit postul cautat"
 else
-gen=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${genres}p"`
-wget -qO - "$gen"|grep tunein-station|grep  clickabletitle|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $9,$11}'>/tmp/tvmaxe-cli/tmp3
-echo -e $posturi
+clear
+echo -e $fundal"Posturi gasite:"$esc$posturi
 cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|sed 's/_/ /g;s/\&amp;/\&/g'|more -d
-fi
+break
+fi;
+else
+clear
+gen=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${genres}p"`
+gen1=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|sed -n "${genres}p"`
+wget -qO - "$gen"|grep tunein-station|grep  clickabletitle|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $9,$11}'>/tmp/tvmaxe-cli/tmp3
+echo -e $fundal$gen1$esc$posturi
+cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|sed 's/_/ /g;s/\&amp;/\&/g'|more -d
+break
+fi;done
 else
 wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|sed 's/_/ /g'|more -d
 fi;
