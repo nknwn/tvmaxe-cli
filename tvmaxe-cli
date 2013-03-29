@@ -521,8 +521,25 @@ elif [[ "$sur" = "international" ]];then
 wget -qO - "http://inbuzunar.mobi/live.php?query=lsops"|grep m3u8|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4,$3" inbuzunar.mobi"}'>/tmp/tvmaxe-cli/tmp3
 echo -e $posturi"Posturi TV:"
 cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+elif [[ "$sur" = "shoutcast" ]];then
+wget -qO - http://www.shoutcast.com/radio/genres|sed -n '/Radio Genres/,/Top genres/ p'|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $8,"http://www.shoutcast.com"$7}' > /tmp/tvmaxe-cli/tmp3
+echo -e $posturi
+cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g;s/\&amp;/\&/g'|more -d
+echo -e $meniu1"Alegeti genul dorit, sau $atentie"c"$meniu1"autati" o statie radio"
+read genres
+if [[ "$genres" = "c" ]];then
+echo -e $meniu1"Ce post radio cautati?"$posturi
+read post
+wget -qO - http://www.shoutcast.com/Internet-Radio/"$post"|grep tunein-station|grep  clickabletitle|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $9,$11}'>/tmp/tvmaxe-cli/tmp3
+cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|sed 's/_/ /g;s/\&amp;/\&/g'|more -d
 else
-wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+gen=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${genres}p"`
+wget -qO - "$gen"|grep tunein-station|grep  clickabletitle|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $9,$11}'>/tmp/tvmaxe-cli/tmp3
+echo -e $posturi
+cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|sed 's/_/ /g;s/\&amp;/\&/g'|more -d
+fi
+else
+wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|sed 's/_/ /g'|more -d
 fi;
 echo -e $meniu1"Selectati numarul postului dorit sau" $atentie"r"$meniu1"eveniti"";"$atentie "q"$meniu1"uit" $atentie"i"$meniu1"nregistrati"$atentie
 read canal
@@ -532,20 +549,21 @@ if [[ "$canal" = "i" ]]; then echo "Alegeti postul dorit pentru inregistrare:"
 read canal2
 clear
 echo inregistrez... 
-if [[ "$sur" = "romania" ]] || [[ "$sur" = "international" ]]||[[ "$sur" = "basarabia" ]];then
+if [[ "$sur" = "romania" ]]||[[ "$sur" = "international" ]]||[[ "$sur" = "basarabia" ]]||[[ "$sur" = "shoutcast" ]];then
 adr2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"`
 soptest2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"|sed 's/:/ /g'|awk '{print $1}'`
 m3u8test2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"|sed 's/?/ /'|sed -e 's/^.*\(m3u8[^ ,]*\).*$/\1/'`
 numetv=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|sed -n "${canal2}p"`
 pls2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+pls3=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"|sed 's/\./ /g'|awk '{print $2}'`
 rtsptest2=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal2}p"|sed 's/:/ /g'|awk '{print $1}'`
 else
-adr2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"`
-pls2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+adr2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"`
+pls2=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal2}p"|sed 's/\./ /g'|awk '{ print $NF }'`
 fi;
 data=`date +_%F_%H-%M-%S`
 echo $numetv
-if [[ "$pls2" = "pls" ]]||[[ "$pls2" = "m3u" ]]; then list="-playlist";else list=" ";fi;
+if [[ "$pls2" = "pls" ]]||[[ "$pls2" = "m3u" ]]||[[ "$pls3" = "shoutcast" ]]; then list="-playlist";else list=" ";fi;
 if [[ "$soptest2" = "sop" ]]; then 
 $(sp-sc $adr2 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer -cache 500 http://localhost:9901 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null &);sleep 5;wait $($player $salvare/$numetv$data.ts); killall sp-sc mplayer;break 4;
 elif [[ "$m3u8test2" = "m3u8" ]]; then 
@@ -562,21 +580,26 @@ $(mplayer $list $adr2 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null
 fi;fi;
 ############################
 if [[ "$canal" = *[[:digit:]]* ]];then clear
-#ipaddr1=`ip addr|grep global|sed 's/\// /'|awk '{print $2}'`
-#ipaddr2=`ifconfig | grep 'inet ' | grep -v '127.0.0.1' | head -n1 | awk '{print $2}'`
-#ipaddr=$ipaddr1||ipaddr=$ipaddr2
-if [[ "$sur" = "romania" ]] || [[ "$sur" = "basarabia" ]]||[[ "$sur" = "international" ]];then
+if [ `builtin type -p ip` ]; then ipaddr1=ok; else ipaddr1=no; fi
+if [ `builtin type -p ifconfig` ]; then ipaddr2=ok; else ipaddr2=no; fi
+if [[ "$ipaddr1" = "ok" ]] && [[ "$ipaddr2" = "no" ]]; then ipaddr=`ip addr|grep global|sed 's/\// /'|awk '{print $2}'`
+elif [[ "$ipaddr2" = "ok" ]]; then ipaddr=`ifconfig | grep 'inet ' | grep -v '127.0.0.1' | head -n1 | awk '{print $2}'`
+else
+ipaddr=http://localhost:9901
+fi;
+if [[ "$sur" = "romania" ]]||[[ "$sur" = "basarabia" ]]||[[ "$sur" = "international" ]]||[[ "$sur" = "shoutcast" ]];then
 adr=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"`
 soptest=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
 m3u8test=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"|sed 's/?/ /'|sed -e 's/^.*\(m3u8[^ ,]*\).*$/\1/'`
 rtsptest=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
 numetv=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|sed -n "${canal}p"`
 pls=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+pls3=`cat /tmp/tvmaxe-cli/tmp3|awk '{print $2}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{print $2}'`
 else
 adr=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"`
 pls=`wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $4}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
 fi;
-if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]; then list=$playlist;else list=" ";fi;fi;
+if [[ "$pls" = "pls" ]]||[[ "$pls" = "m3u" ]]||[[ "$pls3" = "shoutcast" ]]; then list=$playlist;else list=" ";fi;fi;
 echo -e $verde"procesez..."
 if [[ "$soptest" = "sop" ]]; then
 $(sp-sc $adr 8901 9901 &>/dev/null &);sleep 15; wait 
