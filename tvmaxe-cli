@@ -227,17 +227,17 @@ elif [[ "$opt" = "Favorite" ]]; then mkdir -p $HOME/'.'tvmaxe-cli/playlist
 descriere1=`echo $descriere|sed 's/ /_/g'`
 echo $nume $upload $descriere1 >> $HOME/.tvmaxe-cli/playlist/filme.fl 
 break 4
-elif [[ "$opt" = "Descarcati" ]]; then axel -a -o $salvare/$nume$ext $film1||wget -O $salvare/$nume$ext --progress=dot $film1 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
+elif [[ "$opt" = "Descarcati" ]]; then axel -a -o $salvare/"$nume"$ext $film1||wget -O $salvare/"$nume"$ext --progress=dot $film1 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
 echo -ne "\b\b\b\b";break
 elif [[ "$opt" = "Cautati" ]];then clear; break;
 elif [[ "$opt" = "Reveniti" ]];then break 4;
 elif [[ "$opt" = "Inregistrati" ]]; then clear
 echo -e $posturi"Inregistrez:" $fundal$nume...$esc
-$(wget -O $salvare/$nume$ext $film1 &>/dev/null &);echo -e $atentie"...redarea va incepe in 10 sec" $meniu1; sleep 10 ; wait $($player $salvare/$nume$ext $postplay); killall wget;
+$(wget -O $salvare/"$nume"$ext $film1 &>/dev/null &);echo -e $atentie"...redarea va incepe in 10 sec" $meniu1; sleep 10 ; wait $($player $salvare/"$nume"$ext $postplay); killall wget;
 clear;echo -e $posturi"Ati vizionat: "$fundal$nume$esc;sleep 3;
 echo -e $meniu2"Doriti sa pastrati inregistrarea"$posturi" y/n"$meniu2"?"
 read rec
-if  [[ "$rec" = "n" ]]; then rm $salvare/$nume$ext; break 4;else break 4;fi;
+if  [[ "$rec" = "n" ]]; then rm $salvare/"$nume"$ext; break 4;else break 4;fi;
 elif [[ "$opt" = "Parasiti" ]]; then echo -e $esc;exit 0;
 else echo -e $atentie Ati ales gresit, mai incercati. $esc
 fi;done;done;done;fi
