@@ -66,6 +66,7 @@ while :;do
 clear
 echo -e $meniu1 Filme si seriale noi: www.990.ro$posturi
 wget -qO - http://www.990.ro/test/2.php|grep title|sed 's/ /_/g;s/"../ /g;s/[<>]/ /g'|awk '{print $6 " "$2}'>/tmp/tvmaxe-cli/noi
+wget -qO - http://www.990.ro/test/3.php|grep title|sed 's/ /_/g;s/"../ /g;s/[<>]/ /g'|awk '{print $6 " "$2}'>>/tmp/tvmaxe-cli/noi
 cat /tmp/tvmaxe-cli/noi|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 echo -e $meniu1"Selectati numarul filmului dorit sau redati din "$atentie"f"$meniu1"avorite, "$atentie"c"$meniu1"autati altul; "$atentie"n"$meniu1"avigare, "$atentie"r"$meniu1"eveniti; "$atentie "q"$meniu1"uit"$atentie
 read noutate
