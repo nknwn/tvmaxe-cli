@@ -1,10 +1,17 @@
 tvmaxe-cli
 ==========
 
-Utilitar pentru redarea, înregistrarea posturilor tv, radio, filme online, youtube, divertisment (220.ro și trilulilu.ro) în cli/tty pe platforme Linux
+Utilitar pentru redarea, înregistrarea posturilor tv, radio, filme online, youtube, shoutcast, divertisment în cli/tty pe platforme Linux
 
 creat de @calvarr
 contact freenode #linuxfans-ro
 forum http://linuxfans.ro/scripturi/tvmaxe-cli/
+git "https://github.com/calvarr/tvmaxe-cli" experimental
+    "https://github.com/nknwn/tvmaxe-cli"   stabil
 licență GPL
-necesită sopcast, mplayer2, optional axel
+necesită wget, awk, sed, sopcast, mplayer, ffmpeg
+optional axel, ip, ifconfig
+
+INSTALARE:
+----------
+git clone https://github.com/nknwn/tvmaxe-cli .tvmaxe-cli
