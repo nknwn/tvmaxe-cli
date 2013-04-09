@@ -15,3 +15,8 @@ optional axel, ip, ifconfig
 INSTALARE:
 ----------
 git clone https://github.com/nknwn/tvmaxe-cli .tvmaxe-cli
+
+DEZINSTALARE:
+------------
+$ rm -rf ~/.tvmaxe-cli /tmp/tvmaxe-cli
+# rm /usr/bin/tvmaxe-cli
