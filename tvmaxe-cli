@@ -1,6 +1,4 @@
 #!/usr/bin/env bash
-#master=nknwn
-master=calvarr
 mkdir -p /tmp/tvmaxe-cli 
 while :;do
 gol=`ls /tmp/tvmaxe-cli`
@@ -617,20 +615,19 @@ fi;done;done;done;fi
 if [[ "$sur" = "romania" ]];then
 #wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tvmaxe-cli/tmp2
 #etvonline
-wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4"|"$2"|etvonline"}'>/tmp/tvmaxe-cli/tmp2
+wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4"|"$2"|sop"}'>/tmp/tvmaxe-cli/tmp2
 #inbuzunar
-wget -qO - "http://inbuzunar.mobi/live.php?query=massive-telecom"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
-
-wget -qO - "http://inbuzunar.mobi/live.php?query=media-direct"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=sopcast"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=massive-telecom"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|asf"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=media-direct"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtmp"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=sopcast"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|sop"}'>>/tmp/tvmaxe-cli/tmp2
 xxx(){
-wget -qO - "http://inbuzunar.mobi/live.php?query=xxx"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|xxx"}'|sed '$d'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=xxx"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|xxx/rtsp"}'|sed '$d'>>/tmp/tvmaxe-cli/tmp2
 }
 $adult
-wget -qO - "http://inbuzunar.mobi/live.php?query=rcs-rds"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=pbx"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=rcs-rds"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtmp"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=pbx"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
 #tvmaxe
 wget -qO - http://tv-maxe.org/subscriptions/Romania.php|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2"|"$4"|tvmaxe"}'>>/tmp/tvmaxe-cli/tmp2
 echo -e $posturi"Posturi TV:"
@@ -638,13 +635,15 @@ cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>/tmp/tvmaxe-cli/tmp3
 cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 ##############################################
 elif [[ "$sur" = "basarabia" ]];then
-wget -qO - http://inbuzunar.mobi/live.php?query=jv-sun|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4,$3}'> /tmp/tvmaxe-cli/tmp3
+wget -qO - http://inbuzunar.mobi/live.php?query=jv-sun|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|rtsp"}'> /tmp/tvmaxe-cli/tmp2
 echo -e $posturi"Posturi TV:"
-cat /tmp/tvmaxe-cli/tmp3|awk '{print $1}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>/tmp/tvmaxe-cli/tmp3
+cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 elif [[ "$sur" = "international" ]];then
-wget -qO - "http://inbuzunar.mobi/live.php?query=lsops"wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|inbuzunar"}'>/tmp/tvmaxe-cli/tmp3
- wget -qO - "http://inbuzunar.mobi/live.php?query=ogranak"wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|inbuzunar"}'>>/tmp/tvmaxe-cli/tmp3
+wget -qO - "http://inbuzunar.mobi/live.php?query=lsops"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=ogranak"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>>/tmp/tvmaxe-cli/tmp2
 echo -e $posturi"Posturi TV:"
+cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>/tmp/tvmaxe-cli/tmp3
 cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 elif [[ "$sur" = "shoutcast" ]];then
 while :;do
@@ -715,7 +714,7 @@ break
 elif [[ "$pls" = "asf" ]]; then 
 $(ffmpeg -i "$adr" -acodec copy -vcodec copy -f avi - 2>/dev/null|$player -  &>/dev/null);stty sane
 break
-elif [[ "$rtsptest" = "rtsp" ]]; then 
+elif [[ "$rtsptest" = "rtsp" ]]||[[ "$rtsptest" = "rtmp" ]]; then 
 if [[ "$player" = "vlc" ]]; then $player $adr ;break
 else
 $(ffmpeg -y -i "$adr" -acodec copy -vcodec copy -r 20 -f flv - 2>/dev/null|$player - &>/dev/null);stty sane
@@ -740,7 +739,7 @@ elif [[ "$pls" = "asf" ]]; then
 ffmpeg -i "$adr" -acodec copy -vcodec copy -f avi $salvare/$numetv$data.avi 2>/dev/null &
 sleep 10 
 $player $salvare/$numetv$data.avi; stty sane;break
-elif [[ "$rtsptest" = "rtsp" ]]; then 
+elif [[ "$rtsptest" = "rtsp" ]]||[[ "$rtsptest" = "rtmp" ]]; then 
 ffmpeg -y -i "$adr" -acodec copy -vcodec copy -r 20 -f flv $salvare/$numetv$data.flv 2>/dev/null & 
 #ffmpeg -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264  -f flv $salvare/$numetv$data.flv &>/dev/null & 
 sleep 10 
