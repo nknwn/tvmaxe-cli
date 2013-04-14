@@ -682,7 +682,7 @@ else
 echo -e $posturi
 wget -qO - $sur | sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 fi
-echo -e $meniu2"Alegeti postul dorit: "
+echo -e $meniu2"Alegeti postul dorit, $atentie"r"$meniu2"eveniti", $atentie"q"$meniu2"uit": "
 read canal
 if [[ "$canal" = "r" ]]; then break
 elif [[ "$canal" = "q" ]]; then clear ;echo -e $esc; exit 0; fi
@@ -711,12 +711,16 @@ clear; echo -e $verde"redau..."
 echo -e "Difuzare in retea: http://localhost:9901"
 $($player http://localhost:9901 &>/dev/null); killall sp-sc ; break
 fi
-elif [[ "$m3u8test" = "m3u8" ]]; then 
+elif [[ "$m3u8test" = "m3u8" ]]; then
+if [[ "$player" = "vlc" ]]; then $player $adr ;break
+else 
 $(ffmpeg -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv - 2>/dev/null|$player - &>/dev/null);stty sane
-break
+fi;break
 elif [[ "$pls" = "asf" ]]; then 
+if [[ "$player" = "vlc" ]]; then $player $adr ;break
+else
 $(ffmpeg -i "$adr" -acodec copy -vcodec copy -f avi - 2>/dev/null|$player -  &>/dev/null);stty sane
-break
+fi;break
 elif [[ "$rtsptest" = "rtsp" ]]||[[ "$rtsptest" = "rtmp" ]]; then 
 if [[ "$player" = "vlc" ]]; then $player $adr ;break
 else
