@@ -440,7 +440,7 @@ elif [[ "$opt" = "Reveniti" ]];then break 4;
 elif [[ "$opt" = "Inregistrati" ]]; then clear
 nume1=`echo $nume|sed 's/ /_/g'`
 echo -e $posturi"Inregistrez:" $fundal$nume...$esc
-$(wget -O $salvare/$nume1$ext $film1 &>/dev/null &);echo -e $atentie"...redarea va incepe in 10 sec" $meniu1; sleep 10 ; wait $($player $salvare/$nume1$ext $postplay); killall wget;
+$(wget -O $salvare/$nume1$ext $film1 &>/dev/null &);echo -e $atentie"...redarea va incepe in $delay sec" $meniu1; sleep $delay ; wait $($player $salvare/$nume1$ext $postplay); killall wget;
 clear;echo -e $posturi"Ati vizionat: "$fundal$nume$esc;sleep 3;
 echo -e $meniu2"Doriti sa pastrati inregistrarea"$posturi" y/n"$meniu2"?"
 read rec
@@ -714,18 +714,18 @@ fi
 elif [[ "$m3u8test" = "m3u8" ]]; then
 if [[ "$player" = "vlc" ]]; then $player $adr ;break
 else 
-$(ffmpeg -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv - 2>/dev/null|$player - &>/dev/null);stty sane
+$($procesare -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv - 2>/dev/null|$player - &>/dev/null);stty sane
 fi;break
 elif [[ "$pls" = "asf" ]]; then 
 if [[ "$player" = "vlc" ]]; then $player $adr ;break
 else
-$(ffmpeg -i "$adr" -acodec copy -vcodec copy -f avi - 2>/dev/null|$player -  &>/dev/null);stty sane
+$($procesare -i "$adr" -acodec copy -vcodec copy -f avi - 2>/dev/null|$player -  &>/dev/null);stty sane
 fi;break
 elif [[ "$rtsptest" = "rtsp" ]]||[[ "$rtsptest" = "rtmp" ]]; then 
 if [[ "$player" = "vlc" ]]; then $player $adr ;break
 else
-$(ffmpeg -y -i "$adr" -acodec copy -vcodec copy -r 20 -f flv - 2>/dev/null|$player - &>/dev/null);stty sane
-#ffmpeg -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264 -f flv -|$player - ;stty sane
+$($procesare -y -i "$adr" -acodec copy -vcodec copy -r 20 -f flv - 2>/dev/null|$player - &>/dev/null);stty sane
+#$procesare -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264 -f flv -|$player - ;stty sane
 fi;break
 else
 $player $list $adr #&>/dev/null
@@ -735,24 +735,24 @@ fi
 elif [[ "$opt" = "Inregistrati" ]];then
 filtrutv
 clear
-echo -e $atentie"inregistrez... voi reda inregistrarea in 10 sec"
+echo -e $atentie"inregistrez... voi reda inregistrarea in $delay sec"
 if [[ "$soptest" = "sop" ]]; then 
-$(sp-sc $adr 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer -cache 500 http://localhost:9901 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null &);sleep 5;wait $($player $salvare/$numetv$data.ts); killall sp-sc mplayer;break
+$(sp-sc $adr 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer -cache 500 http://localhost:9901 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null &);sleep $delay;wait $($player $salvare/$numetv$data.ts); killall sp-sc mplayer;break
 elif [[ "$m3u8test" = "m3u8" ]]; then 
-ffmpeg -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv  $salvare/$numetv$data.flv 2>/dev/null & 
-sleep 10 
+$procesare -y -i "$adr" -acodec libmp3lame -ar 44100 -vcodec copy -f flv  $salvare/$numetv$data.flv 2>/dev/null & 
+sleep $delay
 $player $salvare/$numetv$data.flv; stty sane;break
 elif [[ "$pls" = "asf" ]]; then 
-ffmpeg -i "$adr" -acodec copy -vcodec copy -f avi $salvare/$numetv$data.avi 2>/dev/null &
-sleep 10 
+$procesare -i "$adr" -acodec copy -vcodec copy -f avi $salvare/$numetv$data.avi 2>/dev/null &
+sleep $delay
 $player $salvare/$numetv$data.avi; stty sane;break
 elif [[ "$rtsptest" = "rtsp" ]]||[[ "$rtsptest" = "rtmp" ]]; then 
-ffmpeg -y -i "$adr" -acodec copy -vcodec copy -r 20 -f flv $salvare/$numetv$data.flv 2>/dev/null & 
-#ffmpeg -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264  -f flv $salvare/$numetv$data.flv &>/dev/null & 
-sleep 10 
+$procesare -y -i "$adr" -acodec copy -vcodec copy -r 20 -f flv $salvare/$numetv$data.flv 2>/dev/null & 
+#procesare -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264  -f flv $salvare/$numetv$data.flv &>/dev/null & 
+sleep $delay
 $player $salvare/$numetv$data.flv; stty sane;break
 else
-$(mplayer $list $adr -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null & ); sleep 10 ; wait $($player $salvare/$numetv$data.ts); killall mplayer; break
+$(mplayer $list $adr -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null & ); sleep $delay ; wait $($player $salvare/$numetv$data.ts); killall mplayer; break
 fi
 elif [[ "$opt" = "Add_Faforite" ]];then mkdir -p $HOME/'.'tvmaxe-cli/playlist
 echo -e $meniu1"Creati o lista sau adaugati la o lista existenta:"$meniu2
