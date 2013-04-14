@@ -431,17 +431,20 @@ descriere1=`echo $descriere|sed 's/ /_/g'`
 echo $nume1"|"$upload"|"$descriere1 >> $HOME/.tvmaxe-cli/playlist/$listaflm.flm
 echo -e $atentie "Salvez lista..."$esc
 break 2
-elif [[ "$opt" = "Descarcati" ]]; then axel -a -o $salvare/$nume$ext $film1||wget -O $salvare/$nume$ext --progress=dot $film1 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
+elif [[ "$opt" = "Descarcati" ]]; then 
+nume1=`echo $nume|sed 's/ /_/g'`
+axel -a -o $salvare/$nume1$ext $film1||wget -O $salvare/$nume1$ext --progress=dot $film1 2>&1 |grep --line-buffered "%" | sed -u -e "s,\.,,g" | awk '{printf("\b\b\b\b%4s", $2)}' 
 echo -ne "\b\b\b\b";break
 elif [[ "$opt" = "Cautati" ]];then clear; break;
 elif [[ "$opt" = "Reveniti" ]];then break 4;
 elif [[ "$opt" = "Inregistrati" ]]; then clear
+nume1=`echo $nume|sed 's/ /_/g'`
 echo -e $posturi"Inregistrez:" $fundal$nume...$esc
-$(wget -O $salvare/$nume$ext $film1 &>/dev/null &);echo -e $atentie"...redarea va incepe in 10 sec" $meniu1; sleep 10 ; wait $($player $salvare/$nume$ext $postplay); killall wget;
+$(wget -O $salvare/$nume1$ext $film1 &>/dev/null &);echo -e $atentie"...redarea va incepe in 10 sec" $meniu1; sleep 10 ; wait $($player $salvare/$nume1$ext $postplay); killall wget;
 clear;echo -e $posturi"Ati vizionat: "$fundal$nume$esc;sleep 3;
 echo -e $meniu2"Doriti sa pastrati inregistrarea"$posturi" y/n"$meniu2"?"
 read rec
-if  [[ "$rec" = "n" ]]; then rm $salvare/$nume$ext; break 4;else break 4;fi;
+if  [[ "$rec" = "n" ]]; then rm $salvare/$nume1$ext; break 4;else break 4;fi;
 elif [[ "$opt" = "Parasiti" ]]; then echo -e $esc;exit 0;
 else echo -e $atentie Ati ales gresit, mai incercati. $esc
 fi;done;done;done;fi
@@ -629,7 +632,7 @@ wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep "<a href"|sed 
 wget -qO - "http://inbuzunar.mobi/live.php?query=pbx"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
 wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
 #tvmaxe
-wget -qO - http://tv-maxe.org/subscriptions/Romania.php|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '1d'|awk '{print $2"|"$4"|tvmaxe"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - http://tv-maxe.org/subscriptions/Romania.php|sed 's/endoftvchannels/\n/'|sed -n '1p'|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '$d'|awk '{print $2"|"$4"|tvmaxe"}'>>/tmp/tvmaxe-cli/tmp2
 echo -e $posturi"Posturi TV:"
 cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>/tmp/tvmaxe-cli/tmp3
 cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
