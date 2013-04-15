@@ -143,8 +143,19 @@ soptest=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print
 m3u8test=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/?/ /'|sed -e 's/^.*\(m3u8[^ ,]*\).*$/\1/'`
 rtsptest=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
 numetv=`cat $cale|awk '{print $1}'|sed -n "${canal}p"`
-pls=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
+pls=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/[._]/ /g'|awk '{ print $NF }'`
 pls3=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{print $2}'`
+if [[ "$soptest" = "sop" ]];then protocol=sop
+elif [[ "$soptest" = "rtsp" ]]; then protocol=rtsp
+elif [[ "$soptest" = "rtmp" ]]; then protocol=rtmp
+elif [[ "$soptest" = "mms" ]]; then protocol=mms
+elif [[ "$m3u8test" = "m3u8" ]]; then protocol=m3u8
+elif [[ "$pls" = "asf" ]]; then protocol=asf
+elif [[ "$pls" = "pls" ]]; then protocol=pls
+elif [[ "$pls" = "m3u" ]]; then protocol=m3u
+elif [[ "$pls" = "aacplus" ]]; then protocol=aacplus
+elif [[ "$pls3" = "shoutcast" ]]; then protocol=shoutcast
+fi
 }
 filtrutv (){
 if [[ "$sur" = "romania" ]]||[[ "$sur" = "basarabia" ]]||[[ "$sur" = "international" ]]||[[ "$sur" = "shoutcast" ]];then
@@ -628,7 +639,7 @@ wget -qO - "http://inbuzunar.mobi/live.php?query=xxx"|grep "<a href"|sed 's/ /_/
 }
 $adult
 wget -qO - "http://inbuzunar.mobi/live.php?query=rcs-rds"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtmp"}'>>/tmp/tvmaxe-cli/tmp2
+wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g;s/fms1/fms25/g'|sed '$d'|awk '{print $4"|"$3"|rtmp"}'>>/tmp/tvmaxe-cli/tmp2
 wget -qO - "http://inbuzunar.mobi/live.php?query=pbx"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
 wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
 #tvmaxe
@@ -698,7 +709,7 @@ elif [[ "$ipaddr2" = "ok" ]]; then ipaddr=`ifconfig | grep 'inet ' | grep -v '12
 else
 ipaddr=http://localhost:9901
 fi;clear
-echo -e $verde"procesez..."
+echo -e $verde"procesez... protocol: $atentie$protocol$verde"
 if [[ "$soptest" = "sop" ]]; then
 $(sp-sc $adr 8901 9901 &>/dev/null &);sleep 15; wait 
 $(testpost=`wget --spider http://localhost:9901  -qO -&>/dev/null 2>&1`)
@@ -708,7 +719,7 @@ sleep 3
 break
 else
 clear; echo -e $verde"redau..."
-echo -e "Difuzare in retea: http://localhost:9901"
+echo -e "Difuzare in retea: $ipaddr:9901"
 $($player http://localhost:9901 &>/dev/null); killall sp-sc ; break
 fi
 elif [[ "$m3u8test" = "m3u8" ]]; then
@@ -721,12 +732,17 @@ if [[ "$player" = "vlc" ]]; then $player $adr ;break
 else
 $($procesare -i "$adr" -acodec copy -vcodec copy -f avi - 2>/dev/null|$player -  &>/dev/null);stty sane
 fi;break
-elif [[ "$rtsptest" = "rtsp" ]]||[[ "$rtsptest" = "rtmp" ]]; then 
+elif [[ "$rtsptest" = "rtsp" ]]; then 
 if [[ "$player" = "vlc" ]]; then $player $adr ;break
 else
 $($procesare -y -i "$adr" -acodec copy -vcodec copy -r 20 -f flv - 2>/dev/null|$player - &>/dev/null);stty sane
 #$procesare -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264 -f flv -|$player - ;stty sane
 fi;break
+elif [[ "$rtsptest" = "rtmp" ]]; then 
+$player $adr
+#rtmpdump -r "$adr" -o - 2>/dev/null|$player -&>/dev/null
+#$($procesare -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec copy -r 20 -f flv - 2>/dev/null|$player - &>/dev/null);stty sane
+break
 else
 $player $list $adr #&>/dev/null
 break
@@ -734,8 +750,9 @@ fi
 #######
 elif [[ "$opt" = "Inregistrati" ]];then
 filtrutv
+data=`date +%R-%D`
 clear
-echo -e $atentie"inregistrez... voi reda inregistrarea in $delay sec"
+echo -e $atentie"inregistrez... protocol $protocol;voi reda inregistrarea in $delay sec"
 if [[ "$soptest" = "sop" ]]; then 
 $(sp-sc $adr 8901 9901 &>/dev/null &); sleep 20; wait $(mplayer -cache 500 http://localhost:9901 -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null &);sleep $delay;wait $($player $salvare/$numetv$data.ts); killall sp-sc mplayer;break
 elif [[ "$m3u8test" = "m3u8" ]]; then 
@@ -746,11 +763,15 @@ elif [[ "$pls" = "asf" ]]; then
 $procesare -i "$adr" -acodec copy -vcodec copy -f avi $salvare/$numetv$data.avi 2>/dev/null &
 sleep $delay
 $player $salvare/$numetv$data.avi; stty sane;break
-elif [[ "$rtsptest" = "rtsp" ]]||[[ "$rtsptest" = "rtmp" ]]; then 
+elif [[ "$rtsptest" = "rtsp" ]];then 
 $procesare -y -i "$adr" -acodec copy -vcodec copy -r 20 -f flv $salvare/$numetv$data.flv 2>/dev/null & 
 #procesare -y -i "$adr" -acodec libmp3lame -ar 22050 -vcodec libx264  -f flv $salvare/$numetv$data.flv &>/dev/null & 
 sleep $delay
 $player $salvare/$numetv$data.flv; stty sane;break
+elif [[ "$rtsptest" = "rtmp" ]]; then 
+rtmpdump -r "$adr" -o $salvare/$numetv$data.flv
+sleep $delay
+$player $salvare/$numetv$data.flv;stty sane;break
 else
 $(mplayer $list $adr -dumpstream -dumpfile $salvare/$numetv$data.ts &>/dev/null & ); sleep $delay ; wait $($player $salvare/$numetv$data.ts); killall mplayer; break
 fi
