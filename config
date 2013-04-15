@@ -69,7 +69,7 @@ fi;
 conversie2 (){
 $(ffmpeg -i $piesa $salvare/$nume.mp3)
 }
-#ffmpeg -i - -f mp3 -vn -acodec libmp3lame - > "$audio.mp3"
+#ffmpeg -i $piesa -f mp3 -vn -acodec libmp3lame > "$audio.mp3"
 #########VVVVSelectati modulul folosit pentru conversie
 conv1=conversie #foloseste lame, din mplayer
 #conv1=conversie2 #foloseste ffmpeg
