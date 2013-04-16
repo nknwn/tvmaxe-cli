@@ -143,7 +143,7 @@ soptest=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print
 m3u8test=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/?/ /'|sed -e 's/^.*\(m3u8[^ ,]*\).*$/\1/'`
 rtsptest=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/:/ /g'|awk '{print $1}'`
 numetv=`cat $cale|awk '{print $1}'|sed -n "${canal}p"`
-pls=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/[._]/ /g'|awk '{ print $NF }'`
+pls=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{ print $NF }'`
 pls3=`cat $cale|awk '{print $2}'|sed -n "${canal}p"|sed 's/\./ /g'|awk '{print $2}'`
 if [[ "$soptest" = "sop" ]];then protocol=sop
 elif [[ "$soptest" = "rtsp" ]]; then protocol=rtsp
@@ -153,13 +153,12 @@ elif [[ "$m3u8test" = "m3u8" ]]; then protocol=m3u8
 elif [[ "$pls" = "asf" ]]; then protocol=asf
 elif [[ "$pls" = "pls" ]]; then protocol=pls
 elif [[ "$pls" = "m3u" ]]; then protocol=m3u
-elif [[ "$pls" = "aacplus" ]]; then protocol=aacplus
 elif [[ "$pls3" = "shoutcast" ]]; then protocol=shoutcast
 fi
 }
 filtrutv (){
 if [[ "$sur" = "romania" ]]||[[ "$sur" = "basarabia" ]]||[[ "$sur" = "international" ]]||[[ "$sur" = "shoutcast" ]];then
-cale="/tmp/tvmaxe-cli/tmp3"
+#cale="/tmp/tvmaxe-cli/tmp3"
 caletv
 elif [[ "$sur" = "favorit" ]];then
 cale="$HOME/.tvmaxe-cli/playlist/$fisierlista"
@@ -627,6 +626,12 @@ else echo -e $atentie"Ati ales gresit, mai incercati."$esc
 fi;done;done;done;fi
 #########################################################
 if [[ "$sur" = "romania" ]];then
+echo -e $posturi"Posturi TV:"
+cale=$HOME/.tvmaxe-cli/playlist/romaniatv.tvro
+if [ -f $HOME/.tvmaxe-cli/playlist/romaniatv.tvro ];then
+cat $HOME/.tvmaxe-cli/playlist/romaniatv.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+echo -e $atentie"i"$meniu2"mprospatare lista tv"
+else
 #wget -qO - http://www.cool-tv.ro/m/|grep sop|sed 's/ /_/g;s/"/ /g;s/.gif//'|awk '{print $4,$2}'|sed 's/^...//;$d;s/-/_/g'>/tmp/tvmaxe-cli/tmp2
 #etvonline
 wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4"|"$2"|sop"}'>/tmp/tvmaxe-cli/tmp2
@@ -644,21 +649,34 @@ wget -qO - "http://inbuzunar.mobi/live.php?query=pbx"|grep "<a href"|sed 's/ /_/
 wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
 #tvmaxe
 wget -qO - http://tv-maxe.org/subscriptions/Romania.php|sed 's/endoftvchannels/\n/'|sed -n '1p'|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '$d'|awk '{print $2"|"$4"|tvmaxe"}'>>/tmp/tvmaxe-cli/tmp2
-echo -e $posturi"Posturi TV:"
-cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>/tmp/tvmaxe-cli/tmp3
-cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+mkdir -p $HOME/.tvmaxe-cli/playlist
+cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>$HOME/.tvmaxe-cli/playlist/romaniatv.tvro
+cat $HOME/.tvmaxe-cli/playlist/romaniatv.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+fi
 ##############################################
 elif [[ "$sur" = "basarabia" ]];then
-wget -qO - http://inbuzunar.mobi/live.php?query=jv-sun|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|rtsp"}'> /tmp/tvmaxe-cli/tmp2
+cale=$HOME/.tvmaxe-cli/playlist/basarabia.tvro
 echo -e $posturi"Posturi TV:"
-cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>/tmp/tvmaxe-cli/tmp3
-cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+if [ -f $HOME/.tvmaxe-cli/playlist/basarabia.tvro ];then
+cat $HOME/.tvmaxe-cli/playlist/basarabia.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+echo -e $atentie"i"$meniu2"mprospatare lista tv"
+else 
+wget -qO - http://inbuzunar.mobi/live.php?query=jv-sun|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|rtsp"}'> /tmp/tvmaxe-cli/tmp2
+cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>$HOME/.tvmaxe-cli/playlist/basarabia.tvro
+cat $HOME/.tvmaxe-cli/playlist/basarabia.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+fi
 elif [[ "$sur" = "international" ]];then
+echo -e $posturi"Posturi TV:"
+cale=$HOME/.tvmaxe-cli/playlist/international.tvro
+if [ -f $HOME/.tvmaxe-cli/playlist/international.tvro ];then
+cat $HOME/.tvmaxe-cli/playlist/international.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+echo -e $atentie"i"$meniu2"mprospatare lista tv"
+else
 wget -qO - "http://inbuzunar.mobi/live.php?query=lsops"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>/tmp/tvmaxe-cli/tmp2
 wget -qO - "http://inbuzunar.mobi/live.php?query=ogranak"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>>/tmp/tvmaxe-cli/tmp2
-echo -e $posturi"Posturi TV:"
-cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>/tmp/tvmaxe-cli/tmp3
-cat /tmp/tvmaxe-cli/tmp3|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>$HOME/.tvmaxe-cli/playlist/international.tvro
+cat $HOME/.tvmaxe-cli/playlist/international.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
+fi
 elif [[ "$sur" = "shoutcast" ]];then
 while :;do
 clear
@@ -696,6 +714,7 @@ fi
 echo -e $meniu2"Alegeti postul dorit, $atentie"r"$meniu2"eveniti", $atentie"q"$meniu2"uit": "
 read canal
 if [[ "$canal" = "r" ]]; then break
+elif [[ "$canal" = "i" ]];then rm $HOME/.tvmaxe-cli/playlist/*.tvro;break
 elif [[ "$canal" = "q" ]]; then clear ;echo -e $esc; exit 0; fi
 ########################################
 OPTIUNE="Redati Inregistrati Add_Faforite Reveniti Parasiti"
