@@ -9,14 +9,31 @@ forum http://linuxfans.ro/scripturi/tvmaxe-cli/
 git "https://github.com/calvarr/tvmaxe-cli" experimental
     "https://github.com/nknwn/tvmaxe-cli"   stabil
 licență GPL
-necesită wget, awk, sed, sopcast, mplayer, ffmpeg
+necesită wget, awk, sed, sopcast, mplayer, ffmpeg, rtmpdump patch 2.5 by Xeebo
 optional axel, ip, ifconfig
 
 INSTALARE:
 ----------
 git clone https://github.com/nknwn/tvmaxe-cli .tvmaxe-cli
+----------
+INSTALARE DEPENDINTE:
+Dependintele necesare sunt enumarate mai sus:
+---------------------------------------------
+- rtmpdump patch 2.5 by Xeebo (acesta este un patch):
+=============================================
+wget -O - rtmpdump.zip https://dl.dropboxusercontent.com/u/1191805/rtmpdump-fp10handshake.zip
+unzip rtmpdump.zip -d rtmpdump
+cd rtmpdump/
+make SYS=posix XLIBS="-lm" SHARED="no"
+sudo make install prefix="/usr"
+Discutii aici: http://blog.ov1d1u.net/2012/04/compilare-rtmpdump-patched-pe-linux.html
+----------------------------------------------
+ffmpeg 1.2
+==============================================
+configuration: --prefix=/usr --disable-debug --disable-static --enable-avresample --enable-dxva2 --enable-fontconfig --enable-gpl --enable-libass --enable-libbluray --enable-libfreetype --enable-libgsm --enable-libmodplug --enable-libmp3lame --enable-libopencore_amrnb --enable-libopencore_amrwb --enable-libopenjpeg --enable-libopus --enable-libpulse --enable-librtmp --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-libv4l2 --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libxvid --enable-postproc --enable-runtime-cpudetect --enable-shared --enable-vdpau --enable-version3 --enable-x11grab
 
-DEZINSTALARE:
-------------
+/-------------\
+|DEZINSTALARE:|
+\-------------/
 $ rm -rf ~/.tvmaxe-cli /tmp/tvmaxe-cli
 # rm /usr/bin/tvmaxe-cli
