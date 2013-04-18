@@ -1,2 +1,0 @@
-Acest fisier nu mai e necesar, il puteti sterge; este creat pentru a putea fi instalat tvmaxe-cli-git din AUR in archlinux, deoarece mantainerul lipseste :(
-Deasemenea utilizatorii de Archlinux sunt rugati sa stearga /usr/bin/tvmaxe-cli si sa creeze un symlink #ln -s ~./tvmaxe-cli/tvmaxe-cli /usr/bin/tvmaxe-cli
