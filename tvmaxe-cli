@@ -674,7 +674,7 @@ cat $HOME/.tvmaxe-cli/playlist/.international.tvro|awk '{print $1,$3}'|nl|column
 echo -e $atentie"i"$meniu2"mprospatare lista tv"
 else
 wget -qO - "http://inbuzunar.mobi/live.php?query=lsops"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=ogranak"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>>/tmp/tvmaxe-cli/tmp2
+#wget -qO - "http://inbuzunar.mobi/live.php?query=ogranak"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>>/tmp/tvmaxe-cli/tmp2
 cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>$HOME/.tvmaxe-cli/playlist/.international.tvro
 cat $HOME/.tvmaxe-cli/playlist/.international.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 fi
