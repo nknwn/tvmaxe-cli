@@ -715,7 +715,7 @@ fi
 echo -e $meniu2"Alegeti postul dorit, $atentie"r"$meniu2"eveniti", $atentie"q"$meniu2"uit": "
 read canal
 if [[ "$canal" = "r" ]]; then break
-elif [[ "$canal" = "i" ]];then rm $HOME/.tvmaxe-cli/playlist/*.tvro;break
+elif [[ "$canal" = "i" ]];then rm $HOME/.tvmaxe-cli/playlist/.*.tvro;break
 elif [[ "$canal" = "q" ]]; then clear ;echo -e $esc; exit 0; fi
 ########################################
 OPTIUNE="Redati Inregistrati Add_Faforite Reveniti Parasiti"
