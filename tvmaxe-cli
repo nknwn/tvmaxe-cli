@@ -637,17 +637,17 @@ else
 #etvonline
 wget -qO - http://www.m.etvonline.ro/|grep sop|sed 's/ /_/g;s/"/ /g;s/\.jpg//;s/\.png//;s/\.gif//'|awk '{print $4"|"$2"|sop"}'>/tmp/tvmaxe-cli/tmp2
 #inbuzunar
-wget -qO - "http://inbuzunar.mobi/live.php?query=massive-telecom"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|asf"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=media-direct"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtmp"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=sopcast"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|sop"}'>>/tmp/tvmaxe-cli/tmp2
+#wget -qO - "http://inbuzunar.mobi/live.php?query=massive-telecom"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|asf"}'>>/tmp/tvmaxe-cli/tmp2
+#wget -qO - "http://inbuzunar.mobi/live.php?query=media-direct"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtmp"}'>>/tmp/tvmaxe-cli/tmp2
+#wget -qO - "http://inbuzunar.mobi/live.php?query=sopcast"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|sop"}'>>/tmp/tvmaxe-cli/tmp2
 xxx(){
 wget -qO - "http://inbuzunar.mobi/live.php?query=xxx"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|xxx/rtsp"}'|sed '$d'>>/tmp/tvmaxe-cli/tmp2
 }
 $adult
-wget -qO - "http://inbuzunar.mobi/live.php?query=rcs-rds"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g;s/fms1/fms25/g'|sed '$d'|awk '{print $4"|"$3"|rtmp"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=pbx"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
-wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
+#wget -qO - "http://inbuzunar.mobi/live.php?query=rcs-rds"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>>/tmp/tvmaxe-cli/tmp2
+#wget -qO - "http://inbuzunar.mobi/live.php?query=direct-one"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g;s/fms1/fms25/g'|sed '$d'|awk '{print $4"|"$3"|rtmp"}'>>/tmp/tvmaxe-cli/tmp2
+#wget -qO - "http://inbuzunar.mobi/live.php?query=pbx"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
+#wget -qO - "http://inbuzunar.mobi/live.php?query=voxility"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|rtsp"}'>>/tmp/tvmaxe-cli/tmp2
 #tvmaxe
 wget -qO - http://tv-maxe.org/subscriptions/Romania.php|sed 's/endoftvchannels/\n/'|sed -n '1p'|sed 's/||/\n /g;s/ /_/g;s/|/ /g'|sed '$d'|awk '{print $2"|"$4"|tvmaxe"}'>>/tmp/tvmaxe-cli/tmp2
 mkdir -p $HOME/.tvmaxe-cli/playlist
@@ -662,7 +662,7 @@ if [ -f $HOME/.tvmaxe-cli/playlist/.basarabia.tvro ];then
 cat $HOME/.tvmaxe-cli/playlist/.basarabia.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 echo -e $atentie"i"$meniu2"mprospatare lista tv"
 else 
-wget -qO - http://inbuzunar.mobi/live.php?query=jv-sun|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|rtsp"}'> /tmp/tvmaxe-cli/tmp2
+#wget -qO - http://inbuzunar.mobi/live.php?query=jv-sun|grep rtsp|grep href|sed 's/ /_/g;s/["<>]/ /g'|awk '{print $4"|"$3"|rtsp"}'> /tmp/tvmaxe-cli/tmp2
 cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>$HOME/.tvmaxe-cli/playlist/.basarabia.tvro
 cat $HOME/.tvmaxe-cli/playlist/.basarabia.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 fi
@@ -673,7 +673,7 @@ if [ -f $HOME/.tvmaxe-cli/playlist/.international.tvro ];then
 cat $HOME/.tvmaxe-cli/playlist/.international.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
 echo -e $atentie"i"$meniu2"mprospatare lista tv"
 else
-wget -qO - "http://inbuzunar.mobi/live.php?query=lsops"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>/tmp/tvmaxe-cli/tmp2
+#wget -qO - "http://inbuzunar.mobi/live.php?query=lsops"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>/tmp/tvmaxe-cli/tmp2
 #wget -qO - "http://inbuzunar.mobi/live.php?query=ogranak"|grep "<a href"|sed 's/ /_/g;s/["<>]/ /g'|sed '$d'|awk '{print $4"|"$3"|m3u8"}'>>/tmp/tvmaxe-cli/tmp2
 cat /tmp/tvmaxe-cli/tmp2|sort -d|sed 's/|/ /g'>$HOME/.tvmaxe-cli/playlist/.international.tvro
 cat $HOME/.tvmaxe-cli/playlist/.international.tvro|awk '{print $1,$3}'|nl|column -c 30|column -t|sed 's/_/ /g'|more -d
