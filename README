@@ -9,7 +9,7 @@ forum http://linuxfans.ro/scripturi/tvmaxe-cli/
 git "https://github.com/calvarr/tvmaxe-cli" experimental
     "https://github.com/nknwn/tvmaxe-cli"   stabil
 licență GPL
-necesită wget, awk, sed, sopcast, mplayer, ffmpeg, rtmpdump patch 2.5 by Xeebo
+necesită wget, awk, sed, sopcast, mplayer, ffmpeg, rtmpdump
 optional axel, ip, ifconfig
 
 INSTALARE:
@@ -19,14 +19,7 @@ git clone https://github.com/nknwn/tvmaxe-cli .tvmaxe-cli
 INSTALARE DEPENDINTE:
 Dependintele necesare sunt enumarate mai sus:
 ---------------------------------------------
-- rtmpdump patch 2.5 by Xeebo (acesta este un patch):
-=============================================
-wget -O - rtmpdump.zip https://dl.dropboxusercontent.com/u/1191805/rtmpdump-fp10handshake.zip
-unzip rtmpdump.zip -d rtmpdump
-cd rtmpdump/
-make SYS=posix XLIBS="-lm" SHARED="no"
-sudo make install prefix="/usr"
-Discutii aici: http://blog.ov1d1u.net/2012/04/compilare-rtmpdump-patched-pe-linux.html
+- rtmpdump 
 ----------------------------------------------
 ffmpeg 1.2
 ==============================================
